@@ -23,10 +23,12 @@ class Aplicativo:
         return self.__topicos
 
     def add_usuario(self, usuario):
-        self.__usuarios.append(usuario)
+        if usuario not in self.__usuarios:
+            self.__usuarios.append(usuario)
 
     def add_admin(self, admin):
-        self.__admins.append(admin)
+        if admin not in self.__admins:
+            self.__admins.append(admin)
 
     def printar_todos_posts(self):
         for topico in self.topicos:

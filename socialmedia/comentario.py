@@ -1,5 +1,5 @@
 from like import Like
-
+from datetime import datetime
 
 class Comentario:
     def __init__(self, conteudo: str, autor):
@@ -7,7 +7,7 @@ class Comentario:
         self.__conteudo = conteudo
         self.__autor = autor
         self.__likes = []
-        self.__horario_postado = None
+        self.__horario_postado = datetime.now() 
 
     @property
     def conteudo(self):

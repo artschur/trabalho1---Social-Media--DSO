@@ -1,3 +1,5 @@
+from like import Like
+
 class Post:
     def __init__(self, conteudo: str, autor):
         self.__conteudo = conteudo
@@ -26,6 +28,7 @@ class Post:
         return self.__autor
 
     def receber_like(self, like):
+        assert isinstance(like, Like), "Somente objetos Like podem ser adcionados." 
         self.likes.append(like)
 
     def adicionar_comentario(self, conteudo, autor):
