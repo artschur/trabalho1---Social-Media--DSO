@@ -27,3 +27,9 @@ class Aplicativo:
 
     def add_admin(self, admin):
         self.__admins.append(admin)
+
+    def printar_todos_posts(self):
+        for topico in self.topicos:
+            print(topico.name)
+            for post in topico.posts:
+                print(post.conteudo)
