@@ -43,11 +43,12 @@ class Usuario:
     def logout(self):
         self.__logged_in = False
 
-    def comentar(self, conteudo_comentario: str, post: Post):
-        if post is not None:
-            post.adicionar_comentario(conteudo_comentario, autor=self)
-        else:
-            raise ValueError("Post não existe.")
+    def comentar(self, conteudo_comentario: str, post: Post, comment_manager):
+        try:
+            comment_manager.comentar(conteudo_comentario, post, self)
+        except ValueError as e:
+            print(f"Error: {e}")
+
     def curtir_post(self, post: Post):
         if post is not None:
             post.receber_like(Like(usuario=self))

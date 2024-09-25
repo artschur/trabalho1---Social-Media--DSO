@@ -1,4 +1,6 @@
 from like import Like
+from comentario import Comentario
+
 
 class Post:
     def __init__(self, conteudo: str, autor):
@@ -28,13 +30,12 @@ class Post:
         return self.__autor
 
     def receber_like(self, like):
-        assert isinstance(like, Like), "Somente objetos Like podem ser adcionados." 
+        assert isinstance(like, Like)
         self.likes.append(like)
 
-    def adicionar_comentario(self, conteudo, autor):
-        import comentario
-
-        self.comentarios.append(comentario.Comentario(conteudo=conteudo, autor=autor))
+    def adicionar_comentario(self, conteudo: str, autor):
+        novo_comentario = Comentario(conteudo=conteudo, autor=autor)
+        self.comentarios.append(novo_comentario)
 
     def count_likes(self):
         return len(self.__likes)
