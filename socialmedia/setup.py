@@ -7,7 +7,7 @@ import comment_manager
 instancia = app.Aplicativo()
 
 # cria um usuario admin
-arthur = admin.Admin("arthur", "arthur@gmail.com", "1210")
+arthur = admin.Admin("arthur", "arthur@gmail.com", "1210121")
 instancia.add_admin(arthur)
 arthur.login()
 
@@ -15,8 +15,8 @@ arthur.login()
 comment_handler = comment_manager.CommentManager()
 
 # cria um usuario e posta
-pedro = usuario.Usuario("pedro", "teste", "teste")
-daniel = usuario.Usuario("daniel", "teste", "teste")
+pedro = usuario.Usuario("pedro", "teste@gmail.com", "testet")
+daniel = usuario.Usuario("daniel", "teste@gmail.com", "testetet")
 post = arthur.postar("teste", "Tecnologia", instancia)
 
 # User comments on the post
@@ -38,6 +38,7 @@ print(post.comentarios[0].conteudo)
 print(post.autor.username)
 print(post.count_likes())
 print(post.count_comentarios())
+print(post.relatorio_likes())
 for i in post.comentarios:
     print(
         f"o comentario: '{i.conteudo}', do {i.autor.username}, possui {i.count_likes()} like(s). Quem curtiu foi o {i.likes[0].usuario.username}"
