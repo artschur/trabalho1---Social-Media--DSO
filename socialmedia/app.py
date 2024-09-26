@@ -25,6 +25,7 @@ class Aplicativo:
     def add_usuario(self, usuario):
         if usuario not in self.__usuarios:
             self.__usuarios.append(usuario)
+        return usuario
 
     def add_admin(self, admin):
         if admin not in self.__admins:
@@ -35,3 +36,6 @@ class Aplicativo:
             print(topico.name)
             for post in topico.posts:
                 print(post.conteudo)
+
+    def listar_todos_usuarios(self):
+        return [usuario.username for usuario in self.__usuarios]

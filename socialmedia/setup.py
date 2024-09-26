@@ -9,14 +9,14 @@ instancia = app.Aplicativo()
 
 arthur = admin.Admin("arthur", "arthur@gmail.com", "1210121")
 instancia.add_admin(arthur)
-arthur.login()
+
 
 comment_handler = comment_manager.CommentManager()
 
 
-pedro = usuario.Usuario("pedro", "teste@gmail.com", "testet")
-daniel = usuario.Usuario("daniel", "teste@gmail.com", "testetet")
-post = arthur.postar("teste", "Tecnologia", instancia)
+pedro = instancia.add_usuario(usuario.Usuario("pedro", "teste@gmail.com", "testet"))
+daniel = instancia.add_usuario(usuario.Usuario("daniel", "teste@gmail.com", "testetet"))
+post = arthur.postar("Esse é um teste", "Tecnologia", instancia)
 
 
 # User comments on the post
@@ -48,5 +48,5 @@ post = arthur.postar("teste", "Tecnologia", instancia)
 
 
 # Inicializando a interação com o usuário pedro
-interacao_pedro = InteracaoUsuario(pedro, instancia)
-interacao_pedro.escolher_topico()
+interacao_pedro = InteracaoUsuario(instancia)
+interacao_pedro.login_tela()

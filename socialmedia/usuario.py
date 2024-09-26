@@ -2,11 +2,12 @@ from like import Like
 from comentario import Comentario
 from comment_manager import CommentManager
 
+
 comment_handler = CommentManager()
 
 
 class Usuario:
-    def __init__(self, username: str, email: str, senha: str) -> None:
+    def __init__(self, username: str, email: str, senha: str):
         self.__username = self.__validacao_username(username)
         self.__email = self.__validacao_email(email)
         self.__senha = self.__validacao_senha(senha)
@@ -58,6 +59,7 @@ class Usuario:
     def __validacao_senha(self, senha: str) -> str:
         if len(senha) < 6:
             raise ValueError("A senha deve ter pelo menos 6 caracteres")
+        return senha
 
     def login(self):
         self.__logged_in = True
