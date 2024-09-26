@@ -1,10 +1,9 @@
-from post import Post
-from usuario import Usuario
+from comentario import Comentario
 
 
 class CommentManager:
-    def comentar(self, conteudo_comentario: str, post: Post, autor: Usuario):
-        if post is not None:
-            post.adicionar_comentario(conteudo_comentario, autor)
+    def comentar(self, comentario: Comentario, post: "Post"):
+        if post is not None:  # comentario.autor.ncommentpost <= 3:
+            post.adicionar_comentario(comentario)
         else:
             raise ValueError("Post não existe.")
