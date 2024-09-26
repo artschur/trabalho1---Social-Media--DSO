@@ -1,5 +1,8 @@
-from post import Post
 from like import Like
+from comentario import Comentario
+from comment_manager import CommentManager
+
+comment_handler = CommentManager()
 
 
 class Usuario:
@@ -9,7 +12,6 @@ class Usuario:
         self.__senha = self.__validacao_senha(senha)
         self.__logged_in = False
         self.__posts_curtidos = []
-
 
     @property
     def username(self):
@@ -38,38 +40,43 @@ class Usuario:
     @property
     def logged_in(self):
         return self.__logged_in
-    
+
     @property
     def posts_curtidos(self):
         return self.__posts_curtidos
-    
-    def __validacao_email(self, email :str) -> str:
+
+    def __validacao_email(self, email: str) -> str:
         if "@" not in email or "." not in email:
             raise ValueError("Email Inválido.")
         return email
-    
+
     def __validacao_username(self, username: str) -> str:
         if len(username) < 2:
             raise ValueError("O nome do usuário deve ter pelo menos 2 caracteres.")
         return username
-    
+
     def __validacao_senha(self, senha: str) -> str:
         if len(senha) < 6:
             raise ValueError("A senha deve ter pelo menos 6 caracteres")
-        
+
     def login(self):
         self.__logged_in = True
 
     def logout(self):
         self.__logged_in = False
 
-    def comentar(self, conteudo_comentario: str, post: Post, comment_manager):
+    def comentar(self, conteudo_comentario: str, post: "Post", comment_manager):
         try:
-            comment_manager.comentar(conteudo_comentario, post, self)
+            novo_comentario = Comentario(conteudo=conteudo_comentario, autor=self)
+            comment_handler.comentar(
+                novo_comentario,
+                post=post,
+            )
+
         except ValueError as e:
             print(f"Error: {e}")
 
-    def curtir_post(self, post: Post):
+    def curtir_post(self, post: "Post"):
         if post is None:
             raise ValueError("Post Inválido.")
         if post in self.__posts_curtidos:

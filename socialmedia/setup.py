@@ -4,21 +4,20 @@ import usuario
 import comment_manager
 from interface_usuario import InteracaoUsuario
 
-# Initialize the application
+
 instancia = app.Aplicativo()
 
-# cria um usuario admin
 arthur = admin.Admin("arthur", "arthur@gmail.com", "1210121")
 instancia.add_admin(arthur)
 arthur.login()
 
-# cria uma instancia pra cuidar dos comentarios
 comment_handler = comment_manager.CommentManager()
 
-# cria um usuario e posta
+
 pedro = usuario.Usuario("pedro", "teste@gmail.com", "testet")
 daniel = usuario.Usuario("daniel", "teste@gmail.com", "testetet")
 post = arthur.postar("teste", "Tecnologia", instancia)
+
 
 # User comments on the post
 # pedro.comentar(
