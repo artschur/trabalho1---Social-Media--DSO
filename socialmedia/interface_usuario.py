@@ -10,15 +10,29 @@ class InteracaoUsuario:
     def __init__(self, aplicativo):
         self.aplicativo = aplicativo
 
+    def logout(self):
+        self.usuario.logout()
+        print("Você fez logout.")
+        self.login_tela()
+
     def login_tela(self):
         print("\n======== Login =========")
         username = input("Digite seu nome de usuário: ")
         c = 0
-        while c < len(self.aplicativo.listar_todos_usuarios()):
-            if self.aplicativo.listar_todos_usuarios()[c] == username:
-                self.usuario = self.aplicativo.usuarios[c]
+        usuarioEncontrado = False
+        lista_usuarios = self.aplicativo.listar_admins_e_usuarios()  # retorna objetos
+        while c < len(lista_usuarios):
+            if (
+                lista_usuarios[c].username == username
+            ):  # se nome do obj for igual ao nome digitado
+                self.usuario = lista_usuarios[c]  # usuario da interface ganha acesso
+                usuarioEncontrado = True
                 break
             c += 1
+        if not usuarioEncontrado:
+            print("Usuário não encontrado.")
+            self.login_tela()
+
         senha = input("Digite sua senha: ")
         if self.usuario.senha == senha:
             print(f"Bem-vindo, {self.usuario.username}!")
@@ -36,31 +50,28 @@ class InteracaoUsuario:
         print("==================================")
 
     def escolher_topico(self):
-        while True:
-            self.mostrar_feed()
-            escolha_topico = input(
-                "Escolha um tópico pelo número ou digite 0 para sair: "
-            )
+        self.mostrar_feed()
+        escolha_topico = input("Escolha um tópico pelo número ou digite 0 para sair: ")
 
-            if escolha_topico.isdigit():
-                escolha_topico = int(escolha_topico)
-                if escolha_topico == 0:
-                    break
-                elif (
-                    1 <= escolha_topico <= len(self.aplicativo.topicos)
-                ):  # Correção feita aqui
-                    topico_escolhido = self.aplicativo.topicos[escolha_topico - 1]
-                    self.mostrar_posts(topico_escolhido)
-                else:
-                    print("Escolha inválida. Tente novamente.")
+        if escolha_topico.isdigit():
+            escolha_topico = int(escolha_topico)
+            if escolha_topico == 0:
+                self.logout()
+            elif (
+                1 <= escolha_topico <= len(self.aplicativo.topicos)
+            ):  # Correção feita aqui
+                topico_escolhido = self.aplicativo.topicos[escolha_topico - 1]
+                self.mostrar_posts(topico_escolhido)
             else:
-                print("Por favor, digite um número.")
+                print("Escolha inválida. Tente novamente.")
+        else:
+            print("Por favor, digite um número.")
 
     def mostrar_posts(self, topico):
         print(f"\n======== Posts em {topico.name} =========")
         if not topico.posts:
             print("Nenhum post encontrado neste tópico.")
-            return
+            return self.escolher_topico()
 
         for idx, post in enumerate(topico.posts, start=1):
             print(f"{idx}. {post.conteudo} (Autor: {post.autor.username})")
@@ -71,13 +82,11 @@ class InteracaoUsuario:
         if escolha_post.isdigit():
             escolha_post = int(escolha_post)
             if escolha_post == 0:
-                return
-            elif (
-                1 <= escolha_post <= len(topico.posts)
-            ):  # Corrigido para aceitar posts corretamente
+                self.logout()  # redireciona para o logout, e muda bool do user
+            elif 1 <= escolha_post <= len(topico.posts):
                 post_escolhido = topico.posts[
                     escolha_post - 1
-                ]  # Ajustado para índice correto
+                ]  # corrijido para o index correto
                 self.interagir_com_post(post_escolhido)
             else:
                 print("Escolha inválida.")
@@ -87,7 +96,7 @@ class InteracaoUsuario:
     def interagir_com_post(self, post):
         while True:
             print("\n======== Interagindo com Post =========")
-            print("Post: {post.conteudo} (Autor: {post.autor.username})")
+            print(f"Post: {post.conteudo} (Autor: {post.autor.username})")
             print(
                 f"Likes: {post.count_likes()}, Comentários: {post.count_comentarios()}"
             )
@@ -109,7 +118,7 @@ class InteracaoUsuario:
             elif escolha == "3":
                 self.mostrar_comentarios(post)
             elif escolha == "0":
-                break
+                self.aplicativo.procurar_post_nos_topicos(post)
             else:
                 print("Escolha inválida.")
 
@@ -134,7 +143,7 @@ class InteracaoUsuario:
         if escolha_comentario.isdigit():
             escolha_comentario = int(escolha_comentario)
             if escolha_comentario == 0:
-                return
+                self.interagir_com_post(post)
             elif 1 <= escolha_comentario <= len(post.comentarios):
                 comentario_escolhido = post.comentarios[escolha_comentario - 1]
                 self.usuario.curtir_comentario(comentario_escolhido)
