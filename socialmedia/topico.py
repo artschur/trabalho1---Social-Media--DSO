@@ -13,3 +13,7 @@ class Topico:
 
     def adicionar_post(self, post):
         self.__posts.append(post)
+
+    def devolver_topico(self, post):
+        if post in self.__posts:
+            return self

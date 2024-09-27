@@ -38,4 +38,16 @@ class Aplicativo:
                 print(post.conteudo)
 
     def listar_todos_usuarios(self):
-        return [usuario.username for usuario in self.__usuarios]
+        return [usuario for usuario in self.__usuarios]
+
+    def listar_todos_admins(self):
+        return [admin for admin in self.__admins]
+
+    def listar_admins_e_usuarios(self):
+        return self.listar_todos_admins() + self.listar_todos_usuarios()
+
+    def procurar_post_nos_topicos(self, post):
+        for topico in self.topicos:
+            if post in topico.posts:
+                return topico
+        return None
