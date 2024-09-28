@@ -1,3 +1,6 @@
+import comentario
+
+
 class Post:
     def __init__(self, conteudo: str, autor):
         self.__conteudo = conteudo
@@ -29,7 +32,6 @@ class Post:
         self.likes.append(like)
 
     def adicionar_comentario(self, conteudo, autor):
-        import comentario
 
         self.comentarios.append(comentario.Comentario(conteudo=conteudo, autor=autor))
 

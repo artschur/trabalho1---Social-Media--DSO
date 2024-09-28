@@ -11,5 +11,9 @@ class Topico:
     def name(self):
         return self.__name
 
+    @name.setter
+    def name(self, newname):
+        self.__name = newname
+
     def adicionar_post(self, post):
         self.__posts.append(post)
