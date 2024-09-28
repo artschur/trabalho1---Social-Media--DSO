@@ -1,6 +1,4 @@
-from like import Like
-from comment_manager import Comentario
-from datetime import datetime
+import comentario
 
 
 class Post:
@@ -9,7 +7,6 @@ class Post:
         self.__likes = []  # Um post pode ter muitos likes
         self.__comentarios = []
         self.__autor = autor
-        self.__data_do_post = datetime.now()
 
     @property
     def conteudo(self):
@@ -31,31 +28,15 @@ class Post:
     def autor(self):
         return self.__autor
 
-    @property
-    def data_do_post(self):
-        return self.__data_do_post
-
     def receber_like(self, like):
-        assert isinstance(like, Like)
         self.likes.append(like)
 
-    def adicionar_comentario(
-        self,
-        comentario: Comentario,
-    ):
-        self.comentarios.append(comentario)
+    def adicionar_comentario(self, conteudo, autor):
 
-    def deletar_comentario(self, comentario: Comentario):
-        if comentario in self.__comentarios:
-            self.__comentarios.remove(comentario)
-            return "Comentario deletado"
-        return "Comentario não encontrado"
+        self.comentarios.append(comentario.Comentario(conteudo=conteudo, autor=autor))
 
     def count_likes(self):
         return len(self.__likes)
 
     def count_comentarios(self):
         return len(self.__comentarios)
-
-    def relatorio_likes(self):
-        return [like.usuario.username for like in self.__likes]
