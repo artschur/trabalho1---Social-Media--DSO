@@ -21,25 +21,26 @@ class Admin(Usuario):
         return "topico nao encontrado"
 
     def deletar_post(self, post):
-        assert isinstance(post, post.Post)
-        from app import Aplicativo
+        pass
+        # assert isinstance(post, post.Post)
+        # from app import Aplicativo
 
-        for topico in Aplicativo().topicos:
-            if post in topico.posts:
-                topico.posts.remove(post)
-                return "Post deleted"
-        return "Post not found"
+        # for topico in Aplicativo().topicos:
+        #     if post in topico.posts:
+        #         topico.posts.remove(post)
+        #         return "Post deleted"
+        # return "Post not found"
 
 
-from app import Aplicativo
+# from app import Aplicativo
 
-appl = Aplicativo()
-arthur = Admin("arthur", "teste", "teste")
-appl.add_admin(arthur)
-arthur.login()
+# appl = Aplicativo()
+# arthur = Admin("arthur", "teste", "teste")
+# appl.add_admin(arthur)
+# arthur.login()
 
-arthur.postar("teste", "Tecnologia", aplicativo=appl)
-arthur.postar("esse post eh sobre economia", "Economia", aplicativo=appl)
-arthur.postar("esse post eh sobre tecnologia tambem", "Tecnologia", aplicativo=appl)
+# arthur.postar("teste", "Tecnologia", aplicativo=appl)
+# arthur.postar("esse post eh sobre economia", "Economia", aplicativo=appl)
+# arthur.postar("esse post eh sobre tecnologia tambem", "Tecnologia", aplicativo=appl)
 
-appl.printar_todos_posts()
+# appl.printar_todos_posts()
