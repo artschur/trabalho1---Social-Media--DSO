@@ -6,3 +6,5 @@ class Like:
     @property
     def usuario(self):
         return self.__usuario
+
+    
