@@ -1,13 +1,14 @@
 from socialmedia.usuario import Usuario
 from socialmedia.admin import Admin
+from socialmedia.views.telaUsuario import TelaUsuario
 
 
 class ControleUsuario:
-    def __init__(self, controladorSistema, tela_usuario):
+    def __init__(self, controladorSistema):
         self.__listaUsuarios = []
         self.__listaAdmins = []
         self.__controleSistema = controladorSistema
-        self.__tela_usuario = tela_usuario
+        self.__tela_usuario = TelaUsuario()
 
     @property
     def lista_usuarios(self):
@@ -47,13 +48,13 @@ class ControleUsuario:
         return True  # eu quero mandar pros posts, como eu chamo o controle de posts??
         # passar na tela??
 
-    def logar(self, controleSistema, username, senha):
+    def logar(self, username, senha):
         # pegar da tela email e senha(input)
         assert self.usuario_is_disponivel(username)
-        for u in self.lista_usuarios + self.lista_admins:
+        for u in self.__lista_usuarios + self.__lista_admins:
             if u.username == username and u.senha == senha:
-                controleSistema.usuario_logado = u
-                return "Logado com sucesso"
+                self.__controleSistema.usuario_logado = u
+                return "True"
         return "Usuário ou senha inválidos"  # retornar tela???
 
     def deslogar(self):
@@ -66,5 +67,17 @@ class ControleUsuario:
                 return False
         return True
 
+    def tela_inicial(self):
+        escolha = self.__tela_usuario.tela_inicial()
+        escolhas = {
+            "1": self.tela_cadastro,
+            "2": self.tela_login,
+            "3": self.tela_logout,
+        }
+        assert escolha in escolhas.keys()
+        return escolhas[escolha]()
 
-# controlador sistema instancia os controles e passa self.
+    def tela_login(self):
+        dictLogin = self.__tela_usuario.tela_login()
+        assert self.logar(dictLogin["username"], dictLogin["senha"])
+        print("Logado com sucesso")
