@@ -1,5 +1,3 @@
-from like import Like
-
 
 class Comentario:
     def __init__(self, conteudo: str, autor):
