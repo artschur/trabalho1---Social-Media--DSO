@@ -3,7 +3,6 @@ from like import Like
 
 class Comentario:
     def __init__(self, conteudo: str, autor):
-
         self.__conteudo = conteudo
         self.__autor = autor
         self.__likes = []
@@ -21,6 +20,10 @@ class Comentario:
     def autor(self):
         return self.__autor
 
-    def receber_like(self, like: Like):
-        assert isinstance(like, Like)
-        self.__likes.append(like)
+    @property
+    def likes(self):
+        return self.__likes
+
+    @property
+    def count_likes(self):
+        return len(self.likes)

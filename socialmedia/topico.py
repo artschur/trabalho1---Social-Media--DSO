@@ -1,11 +1,6 @@
 class Topico:
-    def __init__(self, name):
-        self.__posts = []
-        self.__name = name
-
-    @property
-    def posts(self):
-        return self.__posts
+    def __init__(self, nome):
+        self.__nome = nome
 
     @property
     def name(self):
@@ -14,6 +9,3 @@ class Topico:
     @name.setter
     def name(self, newname):
         self.__name = newname
-
-    def adicionar_post(self, post):
-        self.__posts.append(post)
