@@ -4,9 +4,8 @@ from topico import Topico
 
 
 class Usuario:
-    def __init__(self, username: str, email: str, senha: str) -> None:
+    def __init__(self, username: str, senha: str) -> None:
         self.__username = username
-        self.__email = email
         self.__senha = senha
         self.__logged_in = False
 
@@ -17,14 +16,6 @@ class Usuario:
     @username.setter
     def username(self, newname):
         self.__username = newname
-
-    @property
-    def email(self):
-        return self.__email
-
-    @email.setter
-    def email(self, newemail):
-        self.__email = newemail
 
     @property
     def senha(self):
@@ -54,18 +45,5 @@ class Usuario:
         comentario.receber_like(Like(usuario=self))
 
 
-arthur = Usuario("arthur", "art@gmail.com", "123")
+arthur = Usuario("arthur", "123")
 print(arthur.username)
-
-
-p = Post("oi", arthur)
-
-arthur.comentar("oi", p)
-print(p.comentarios[0].autor.username)
-print(p.comentarios[0].conteudo)  # comment ok, user ok, post ok,
-tec = Topico("tecnologia")
-tec.adicionar_post(p)
-print(tec.posts)  # topico ok
-arthur.curtir_post(p)
-
-print(len(p.likes))  # like ok
