@@ -3,9 +3,9 @@ class Topico:
         self.__nome = nome
 
     @property
-    def name(self):
-        return self.__name
+    def nome(self):
+        return self.__nome 
 
-    @name.setter
-    def name(self, newname):
-        self.__name = newname
+    @nome.setter
+    def nome(self, newnome):
+        self.__nome = newnome
