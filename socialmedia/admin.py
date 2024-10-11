@@ -1,4 +1,4 @@
-from usuario import Usuario
+from socialmedia.usuario import Usuario
 
 
 class Admin(Usuario):

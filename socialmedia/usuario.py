@@ -1,8 +1,3 @@
-from post import Post
-from like import Like
-from topico import Topico
-
-
 class Usuario:
     def __init__(self, username: str, senha: str) -> None:
         self.__username = username

@@ -1,6 +1,3 @@
-import comentario
-
-
 class Post:
     def __init__(self, titulo: str, conteudo: str, autor, topico):
         self.__titulo = titulo
