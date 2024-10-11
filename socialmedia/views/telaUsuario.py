@@ -11,3 +11,10 @@ class TelaUsuario:
         username = input("Digite seu username: ")
         senha = input("Digite sua senha: ")
         return {"username": username, "senha": senha}
+    
+    def tela_cadastro(self):
+        username = input("Digite seu username: ")
+        senha = input("Digite sua senha: ")
+        return {"username": username, "senha": senha}
+    
+    
