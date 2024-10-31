@@ -12,4 +12,4 @@ class ControleSistema:
 
 if __name__ == "__main__":
     controleUs = ControleSistema()
-    controleUs.controleUsuario.tela_login()
+    controleUs.controleUsuario.cadastrar()
