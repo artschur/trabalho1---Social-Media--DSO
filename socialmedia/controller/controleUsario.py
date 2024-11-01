@@ -20,7 +20,7 @@ class ControleUsuario:
 
     @property
     def controleSistema(self):
-        return self.__controle
+        return self.__controleSistema
     
     def adicionar_admin(self, username, senha):
         assert self.usuario_is_disponivel(username=username)
@@ -91,7 +91,6 @@ class ControleUsuario:
         try:
             self.cadastrar(dictCadastro["username"], dictCadastro["senha"])
             print("Cadastro realizado com sucesso!")
-            # Redirect to post control after successful registration
             self.__controleSistema.controlePost.listar_posts()
         except AssertionError as e:
             print(f"Erro no cadastro: {e}")
