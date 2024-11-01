@@ -6,6 +6,7 @@ class Post:
         self.__comentarios = []
         self.__autor = autor
         self.__topico = topico
+        #talvez o datetime de criação do post
 
     @property
     def conteudo(self):
