@@ -4,8 +4,8 @@ class TelaPost:
         print("\n=== Criar Novo Post ===")
         titulo = input("Digite o titulo do post: ").strip()
         conteudo = input("Digite o conteudo do post: ").strip()
-        topico = #nao sei como fazemos a escolha do topico
-        return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
+        # topico = #nao sei como fazemos a escolha do topico
+        return {"titulo": titulo, "conteudo": conteudo}
     
     def mostrar_lista_posts(self, posts):
         print("\n=== Lista de Posts ===")
@@ -14,11 +14,11 @@ class TelaPost:
             return #talvez 0
         
         for i, post in enumerate(posts, 1):
-            print(f"{i} - {post['titulo']}")
+            print(f"{i} - {post.titulo}")
 
         return int(input("Digite o numero do post para ver mais detalhes (ou 0 pra voltar): "))
     
-    def mostrar_posts(self, post):
+    def vizualizar_post(self, post):
         print(f"\n=== {post.titulo} ===")
         print(f"Autor: {post.autor.username}")
         print(f"Tópico: {post.topico.nome}")

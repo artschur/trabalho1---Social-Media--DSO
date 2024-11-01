@@ -1,43 +1,60 @@
 from socialmedia.post import Post
 from socialmedia.topico import Topico
+from socialmedia.views.telaPost import TelaPost
+class NotLoggedInError(Exception):
+    pass
+
+class PostCreationError(Exception):
+    pass
 
 class ControlePost:
     def __init__(self, controladorSistema):
-        self.__lista_posts = []
+        self.__lista_posts = [Post("Como ganhar mais dinheiro", "Trabalhe mais", "admin", "Dinheiro")]
         self.__controleSistema = controladorSistema
+        self.__telaPost = TelaPost()
+
+
+    @property
+    def telaPost(self):
+        return self.__telaPost
+
+    @property
+    def lista_posts(self):
+        return self.__lista_posts
 
     def criar_post(self):
         usuario_logado = self.__controleSistema.usuario_logado
         if not usuario_logado:
-            self.__tela_post.mostrar_mensagem("Você precisa estar logado para criar um post")
-            return
-        dados_post = self.__tela_post.tela_criar_post()
-        if dados_post['titulo'] and dados_post['conteudo']:
-            topico = self.obter_topico_por_nome(dados_post['topico'])
-            novo_post = Post(dados_post['titulo'], dados_post['conteudo'], usuario_logado, topico)
-            self.__lista_posts.append(novo_post)
-            self.__tela_post.mostrar_mensagem("Post criado com sucesso")
-        else:
-            self.__tela_post.mostrar_mensagem("Erro ao criar post")
-        
+            self.telaPost.mostrar_mensagem("Você precisa estar logado para criar um post")
+            return False
 
+        try:
+            dados_post = self.__telaPost.tela_criar_post()
+            if dados_post['titulo'] and dados_post['conteudo']:
+                topico = self.obter_topico_por_nome(dados_post['topico'])
+                novo_post = Post(dados_post['titulo'], dados_post['conteudo'], usuario_logado, topico)
+                self.lista_posts.append(novo_post)
+                return True
+            else:
+                raise PostCreationError("Erro: Título ou conteúdo do post está faltando.")
+        except PostCreationError as e:
+            self.telaPost.mostrar_mensagem(str(e))
+            return False
     def obter_topico_por_nome(self, nome_topico: str):
         return Topico(nome_topico)
-    
+
     def listar_posts(self):
-        while True:    
-            escolha = self._tela_post.mostrar_lista_post(self.__lista_posts)
+        while True:
+            escolha = self.__telaPost.mostrar_lista_posts(self.__lista_posts)
             if escolha == "0":
                 break
             try:
                 indice = int(escolha) - 1
                 if 0 <= indice < len(self.__lista_posts):
-                    self.visualizar_post(self.__lista_posts[indice])
+                    self.telaPost.vizualizar_post(self.__lista_posts[indice])
                 else:
-                    self.__tela_post.mostrar_mensagem("Escolha Inválida")
+                    raise IndexError("Escolha Inválida")
             except ValueError:
-                self.__tela_post.mostrar_mensagem("Digite um número válido")
-                
-
-
-
+                raise ValueError("Escolha Inválida")
+            except IndexError as e:
+                raise IndexError(str(e))
