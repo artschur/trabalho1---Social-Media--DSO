@@ -13,7 +13,4 @@ class TelaUsuario:
         return {"username": username, "senha": senha}
 
     def tela_cadastro(self):
-        print("Tela de cadastro")
-        username = input("Digite seu username: ")
-        senha = input("Digite sua senha: ")
-        return {"username": username, "senha": senha}
+        
