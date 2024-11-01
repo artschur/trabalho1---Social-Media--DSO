@@ -9,9 +9,10 @@ class PostCreationError(Exception):
 
 class ControlePost:
     def __init__(self, controladorSistema):
-        self.__lista_posts = [Post("Como ganhar mais dinheiro", "Trabalhe mais", "admin", "Dinheiro")]
+        self.__lista_posts = []
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
+        self.__lista_topicos = ["Economia", "Tecnologia", "Esportes"]
 
 
     @property
@@ -22,6 +23,10 @@ class ControlePost:
     def lista_posts(self):
         return self.__lista_posts
 
+    @property
+    def lista_topicos(self):
+        return self.__lista_topicos
+
     def criar_post(self):
         usuario_logado = self.__controleSistema.usuario_logado
         if not usuario_logado:
@@ -29,7 +34,7 @@ class ControlePost:
             return False
 
         try:
-            dados_post = self.__telaPost.tela_criar_post()
+            dados_post = self.__telaPost.tela_criar_post(self.lista_topicos)
             if dados_post['titulo'] and dados_post['conteudo']:
                 topico = self.obter_topico_por_nome(dados_post['topico'])
                 novo_post = Post(dados_post['titulo'], dados_post['conteudo'], usuario_logado, topico)

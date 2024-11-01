@@ -1,11 +1,17 @@
 class TelaPost:
-    
-    def tela_criar_post(self):
+    def tela_criar_post(self, lista_topicos):
         print("\n=== Criar Novo Post ===")
-        titulo = input("Digite o titulo do post: ").strip()
-        conteudo = input("Digite o conteudo do post: ").strip()
-        # topico = #nao sei como fazemos a escolha do topico
-        return {"titulo": titulo, "conteudo": conteudo}
+        titulo = input("Digite o título do post: ").strip()
+        conteudo = input("Digite o conteúdo do post: ").strip()
+        
+        print("\nSelecione o Tópico:")
+        for i, topico in enumerate(lista_topicos, 1):
+            print(f"{i} - {topico}")
+        
+        topico_escolhido = int(input("Escolha o número do tópico: "))
+        topico = lista_topicos[topico_escolhido - 1]
+        
+        return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
     
     def mostrar_lista_posts(self, posts):
         print("\n=== Lista de Posts ===")
