@@ -4,20 +4,39 @@ class TelaPost:
         print("\n=== Criar Novo Post ===")
         titulo = input("Digite o titulo do post: ").strip()
         conteudo = input("Digite o conteudo do post: ").strip()
-        # topico = #nao sei como fazemos a escolha do topico
-        return {"titulo": titulo, "conteudo": conteudo}
+        topico = input("Digite o tópico do post: ").strip().lower()
+        return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
     
     def mostrar_lista_posts(self, posts):
         print("\n=== Lista de Posts ===")
         if not posts:
             print("Nenhum post encontrado")
             return #talvez 0
-        
-        for i, post in enumerate(posts, 1):
+        print("1 - Criar Post")
+        for i, post in enumerate(posts, 2):
             print(f"{i} - {post.titulo}")
 
         return int(input("Digite o numero do post para ver mais detalhes (ou 0 pra voltar): "))
-    
+
+    def mostrar_comentarios(self, post):
+        print("\n=== Comentários ===")
+        for i, comentario in enumerate(post.comentarios, 1):
+            print(f"{i}. '{comentario.conteudo}' - {comentario.autor.username} | {comentario.count_likes} likes")
+        print("\n1. Curtir Comentário")
+        print("2. Voltar")
+        return input("Escolha uma opção: ")
+
+    def selecionar_comentario(self, post):
+        print("\nSelecione o número do comentário que deseja curtir:")
+        for i, comentario in enumerate(post.comentarios, 1):
+            print(
+                f"{i}. '{comentario.conteudo}' - {comentario.autor.username} | {comentario.count_likes} likes")
+        return input("Digite o número do comentário: ")
+
+    def comentar_post(self):
+        return input("Digite o seu comentário: ")
+
+
     def vizualizar_post(self, post):
         print(f"\n=== {post.titulo} ===")
         print(f"Autor: {post.autor.username}")

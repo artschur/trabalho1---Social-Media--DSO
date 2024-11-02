@@ -1,8 +1,10 @@
+from socialmedia.topico import Topico
+
 class Post:
-    def __init__(self, titulo: str, conteudo: str, autor, topico):
+    def __init__(self, titulo: str, conteudo: str, autor, topico : Topico):
         self.__titulo = titulo
         self.__conteudo = conteudo
-        self.__likes = []  # Um post pode ter muitos likes
+        self.__likes = []
         self.__comentarios = []
         self.__autor = autor
         self.__topico = topico
@@ -45,7 +47,7 @@ class Post:
         return self.__autor
 
     def count_likes(self):
-        return len(self.__likes)
+        return len(self.likes)
 
     def count_comentarios(self):
         return len(self.__comentarios)
