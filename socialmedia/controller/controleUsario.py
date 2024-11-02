@@ -5,7 +5,7 @@ from socialmedia.views.telaUsuario import TelaUsuario
 
 class ControleUsuario:
     def __init__(self, controladorSistema):
-        self.__lista_usuarios = [Usuario("admin", "admin")]
+        self.__lista_usuarios = [Admin("a", "a")]
         self.__lista_admins = []
         self.__controleSistema = controladorSistema
         self.__tela_usuario = TelaUsuario()
@@ -27,23 +27,23 @@ class ControleUsuario:
         self.lista_admins.append(Admin(username, senha))
         return True
 
-    def cadastrar(self, username, senha):
-        assert self.usuario_is_disponivel(username), "Usuário já existe"
-        self.lista_usuarios.append(Usuario(username, senha))
-        return True
+    def cadastrar(self, usuario : Usuario):
+        assert self.usuario_is_disponivel(usuario.username), "Usuário já existe"
+        self.lista_usuarios.append(usuario)
+        return usuario
     def login_auth(self, username, senha):
         assert not self.usuario_is_disponivel(username), "Usuário não encontrado"
 
         for u in self.__lista_usuarios + self.__lista_admins:
             if u.username == username and u.senha == senha:
                 self.__controleSistema.usuario_logado = u
-                return True
+                return {"user": u, "admin": isinstance(u, Admin)}
 
         return "Usuário ou senha inválidos"
 
     def deslogar(self):
         self.controleSistema.usuario_logado = None
-        return "Deslogado com sucesso", exit()
+        return "Deslogado com sucesso"
 
 
     def usuario_is_disponivel(self, username):
@@ -73,9 +73,9 @@ class ControleUsuario:
 
         login_result = self.login_auth(dictLogin["username"], dictLogin["senha"])
 
-        if login_result is True:
+        if login_result != False: ##
             print("Logado com sucesso!")
-            return True
+            return login_result
         else:
             print("erro no login")
             return False
@@ -89,9 +89,9 @@ class ControleUsuario:
             return "A senha não pode ser vazia."
 
         try:
-            self.cadastrar(dictCadastro["username"], dictCadastro["senha"])
+            usuario = self.cadastrar(Usuario(dictCadastro["username"], dictCadastro["senha"]))
             print("Cadastro realizado com sucesso!")
-            self.__controleSistema.controlePost.listar_posts()
+            return {"user": usuario, "admin": isinstance(usuario, Admin)}
         except AssertionError as e:
             print(f"Erro no cadastro: {e}")
 
