@@ -15,6 +15,7 @@ class ControlePost:
         self.__posts = []
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
+        self.__lista_topicos = ["Economia", "Tecnologia", "Esportes"]
 
 
     @property
@@ -24,6 +25,10 @@ class ControlePost:
     @property
     def posts(self):
         return self.__posts
+
+    @property
+    def lista_topicos(self):
+        return self.__lista_topicos
 
     def criar_post(self):
         usuarioLogado = self.__controleSistema.usuarioLogado
