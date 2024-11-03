@@ -1,6 +1,7 @@
 class TelaUsuario:
     def tela_inicial(self):
-        print("Bem vindo ao Social Media!")
+        print("Bem vindo ao SocialBlogs!")
+        print("Faça login ou cadastre-se para continuar. Nos somos uma rede social baseada em tópicos.")
         print("Escolha uma opção:")
         print("1 - Login")
         print("2 - Cadastro")

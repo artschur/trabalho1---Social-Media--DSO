@@ -12,8 +12,10 @@ class TelaPost:
         topico = lista_topicos[topico_escolhido - 1]
         return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
     
-    def mostrar_lista_posts(self, posts):
+    def mostrar_lista_posts(self, posts, topico=None):
         print("\n=== Lista de Posts ===")
+        if topico:
+            print(f"=== Tópico: {topico.nome} ===")
         if not posts:
             print("Nenhum post encontrado")
             return

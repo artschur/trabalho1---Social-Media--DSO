@@ -9,8 +9,8 @@ from socialmedia.controller.controleTopicos import ControleTopico
 class ControleSistema:
     def __init__(self) -> None:
         self.__controleUsuario = ControleUsuario(self)
-        self.__controlePost = ControlePost(self)
-        self.__controleTopico = ControleTopico()
+        self.__controleTopico = ControleTopico(self)
+        self.__controlePost = ControlePost(self, self.controleTopico)
         self.__usuarioLogado = None
         self.__topico_atual = None
 
@@ -45,13 +45,11 @@ class ControleSistema:
 
 if __name__ == "__main__":
     sis = ControleSistema()
-
     user = sis.controleUsuario.tela_inicial()
     sis.usuarioLogado = user["user"]
     sis.controlePost.posts.append(Post("titulo", "conteudo", sis.usuarioLogado, Topico("Economia")))
     sis.controlePost.posts.append(Post("Tec", "conteudo", sis.usuarioLogado, Topico("Tecnologia")))
-
-    sis.topico_atual = sis.controleTopico.get_topico()
+    sis.controleTopico.get_topico()
     sis.controlePost.listar_posts(sis.topico_atual)
 
 
