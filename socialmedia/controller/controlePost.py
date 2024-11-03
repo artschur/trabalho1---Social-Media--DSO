@@ -3,6 +3,7 @@ from socialmedia.topico import Topico
 from socialmedia.views.telaPost import TelaPost
 from socialmedia.comentario import Comentario
 from socialmedia.admin import Admin
+from socialmedia.controller.controleTopicos import ControleTopico
 # from
 class NotLoggedInError(Exception):
     pass
@@ -15,8 +16,16 @@ class ControlePost:
         self.__posts = []
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
-        self.__lista_topicos = ["Economia", "Tecnologia", "Esportes"]
+        self.__controleTopicos = ControleTopico()
 
+
+    @property
+    def controleSistema(self):
+        return self.__controleSistema
+
+    @property
+    def controleTopicos(self):
+        return self.__controleTopicos
 
     @property
     def telaPost(self):
@@ -26,49 +35,45 @@ class ControlePost:
     def posts(self):
         return self.__posts
 
-    @property
-    def lista_topicos(self):
-        return self.__lista_topicos
-
     def criar_post(self):
         usuarioLogado = self.__controleSistema.usuarioLogado
         if not isinstance(usuarioLogado, Admin):
             print("Você precisa estar logado como admin para criar um post.")
-            return self.listar_posts()
-
-        try:
-            dados_post = self.__telaPost.tela_criar_post()
-            if dados_post['titulo'] and dados_post['conteudo'] and dados_post['topico']:
-                novo_post = Post(dados_post['titulo'], dados_post['conteudo'], usuarioLogado, Topico(dados_post['topico']))
-                self.posts.append(novo_post)
-                return self.post_individual(self.posts[-1])
-            else:
-                raise PostCreationError("Erro: Título ou conteúdo do post está faltando.")
-        except PostCreationError as e:
             return False
 
-    # def obter_topico_por_nome(self, nome_topico: str):
-    #     for t in self.__controleSistema.topicos:
-    #         if t.nome == nome_topico:
-    #             return t
-    #     return Topico(nome_topico)
+        dados_post = self.__telaPost.tela_criar_post(self.controleTopicos.topicos)
+        if not (dados_post['titulo'] and dados_post['conteudo']):
+            print("Erro: Título ou conteúdo do post está faltando.")
+            return False
 
-    def listar_posts(self):
-        while True:
-            escolha = int(self.telaPost.mostrar_lista_posts(self.posts))
-            if escolha == 1:
-                self.criar_post()
-            try:
-                indice = int(escolha) - 2
-                if 0 <= indice < len(self.posts):
-                    print(self.posts[indice])
-                    self.post_individual(self.posts[indice])
-                else:
-                    raise IndexError("Escolha Inválida")
-            except ValueError:
-                raise ValueError("Escolha Inválida")
-            except IndexError as e:
-                raise IndexError(str(e))
+        topico_escolhido = dados_post['topico']
+        if not topico_escolhido:
+            print("Tópico inválido.")
+            return False
+
+        novo_post = Post(dados_post['titulo'], dados_post['conteudo'], usuarioLogado, topico_escolhido)
+        self.__posts.append(novo_post)
+        self.post_individual(novo_post)
+        return True
+
+    def listar_posts(self, topico=None):
+        topico_posts = self.posts
+        if topico:
+            topico_posts = [post for post in self.posts if post.topico.nome == topico.nome]
+            if topico_posts == []:
+                print("Nenhum post encontrado para este tópico.")
+                print("Mostrando todos")
+                topico_posts = self.posts
+
+        escolha = int(self.telaPost.mostrar_lista_posts(topico_posts))
+        if escolha == 1:
+            self.criar_post()
+        else:
+            indice = escolha - 2
+            if 0 <= indice < len(topico_posts):
+                self.post_individual(topico_posts[indice])
+            elif escolha == -1:
+                print(self.controleTopicos.get_topico())
 
     def curtir_comentario(self, comentario):
         if self.__controleSistema.usuario_logado not in comentario.likes:

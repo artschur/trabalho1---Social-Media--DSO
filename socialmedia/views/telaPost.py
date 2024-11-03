@@ -3,11 +3,11 @@ class TelaPost:
         print("\n=== Criar Novo Post ===")
         titulo = input("Digite o título do post: ").strip()
         conteudo = input("Digite o conteúdo do post: ").strip()
-        
+
         print("\nSelecione o Tópico:")
         for i, topico in enumerate(lista_topicos, 1):
-            print(f"{i} - {topico}")
-        
+            print(f"{i} - {topico.nome}")
+
         topico_escolhido = int(input("Escolha o número do tópico: "))
         topico = lista_topicos[topico_escolhido - 1]
         return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
@@ -16,7 +16,7 @@ class TelaPost:
         print("\n=== Lista de Posts ===")
         if not posts:
             print("Nenhum post encontrado")
-            return #talvez 0
+            return
         print("1 - Criar Post")
         for i, post in enumerate(posts, 2):
             print(f"{i} - {post.titulo}")
