@@ -1,8 +1,8 @@
-
-class Comentario:
+from socialmedia.modelo import Modelo
+class Comentario(Modelo):
     def __init__(self, conteudo: str, autor):
+        super().__init__(autor)
         self.__conteudo = conteudo
-        self.__autor = autor
         self.__likes = []
         self.__horario_postado = None
 
@@ -25,3 +25,13 @@ class Comentario:
     @property
     def count_likes(self):
         return len(self.likes)
+    
+    def exibir_detalhes(self):
+        print(f"Conteúdo: {self.__conteudo}, Autor: {self.autor}")
+
+    def validar(self):
+        if not self.__conteudo:
+            print("Erro: Conteúdo do comentário é obrigatório.")
+            return False
+        return True 
+    

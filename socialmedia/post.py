@@ -1,12 +1,12 @@
 from socialmedia.topico import Topico
-
-class Post:
+from socialmedia.modelo import Modelo
+class Post(Modelo):
     def __init__(self, titulo: str, conteudo: str, autor, topico : Topico):
+        super().__init__(autor)
         self.__titulo = titulo
         self.__conteudo = conteudo
         self.__likes = []
         self.__comentarios = []
-        self.__autor = autor
         self.__topico = topico
         #talvez o datetime de criação do post
 
@@ -51,3 +51,13 @@ class Post:
 
     def count_comentarios(self):
         return len(self.__comentarios)
+
+    def exibir_detalhes(self):
+        print(f"Título: {self.__titulo}, Conteúdo: {self.__conteudo}, Autor: {self.autor}, Tópico: {self.__topico}")
+
+    def validar(self):
+        if not self.__titulo or not self.__conteudo:
+            print("Erro: Título e conteúdo são obrigatórios")
+            return False    
+        return True
+    
