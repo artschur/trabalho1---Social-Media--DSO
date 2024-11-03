@@ -1,14 +1,13 @@
 from socialmedia.topico import Topico
-
-class Post:
+from socialmedia.modelo import Modelo
+class Post(Modelo):
     def __init__(self, titulo: str, conteudo: str, autor, topico : Topico):
+        super().__init__(autor)
         self.__titulo = titulo
         self.__conteudo = conteudo
         self.__likes = []
         self.__comentarios = []
-        self.__autor = autor
         self.__topico = topico
-        #talvez o datetime de criação do post
 
     @property
     def conteudo(self):
@@ -41,10 +40,6 @@ class Post:
     @property
     def comentarios(self):
         return self.__comentarios
-
-    @property
-    def autor(self):
-        return self.__autor
 
     def count_likes(self):
         return len(self.likes)
