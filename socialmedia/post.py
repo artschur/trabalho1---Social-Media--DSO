@@ -8,7 +8,6 @@ class Post(Modelo):
         self.__likes = []
         self.__comentarios = []
         self.__topico = topico
-        #talvez o datetime de criação do post
 
     @property
     def conteudo(self):
@@ -42,22 +41,8 @@ class Post(Modelo):
     def comentarios(self):
         return self.__comentarios
 
-    @property
-    def autor(self):
-        return self.__autor
-
     def count_likes(self):
         return len(self.likes)
 
     def count_comentarios(self):
         return len(self.__comentarios)
-
-    def exibir_detalhes(self):
-        print(f"Título: {self.__titulo}, Conteúdo: {self.__conteudo}, Autor: {self.autor}, Tópico: {self.__topico}")
-
-    def validar(self):
-        if not self.__titulo or not self.__conteudo:
-            print("Erro: Título e conteúdo são obrigatórios")
-            return False    
-        return True
-    
