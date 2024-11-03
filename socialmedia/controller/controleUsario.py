@@ -36,13 +36,13 @@ class ControleUsuario:
 
         for u in self.__lista_usuarios + self.__lista_admins:
             if u.username == username and u.senha == senha:
-                self.__controleSistema.usuario_logado = u
+                self.__controleSistema.usuarioLogado = u 
                 return {"user": u, "admin": isinstance(u, Admin)}
 
         return "Usuário ou senha inválidos"
 
     def deslogar(self):
-        self.controleSistema.usuario_logado = None
+        self.controleSistema.usuarioLogado = None
         return "Deslogado com sucesso"
 
 

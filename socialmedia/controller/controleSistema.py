@@ -4,15 +4,18 @@ from socialmedia.admin import Admin
 from socialmedia.post import Post
 from socialmedia.topico import Topico
 from socialmedia.controller.controleTopicos import ControleTopico
-
+from socialmedia.controller.controleComentario import ControleComentario
+from socialmedia.topico import Topico
 
 class ControleSistema:
     def __init__(self) -> None:
         self.__controleUsuario = ControleUsuario(self)
         self.__controlePost = ControlePost(self)
         self.__controleTopico = ControleTopico()
+        self.__controleComentario = ControleComentario(self)
         self.__usuarioLogado = None
         self.__topico_atual = None
+
 
     @property
     def controleUsuario(self):
@@ -29,6 +32,10 @@ class ControleSistema:
     @property
     def topico_atual(self):
         return self.__topico_atual
+    
+    @property
+    def controleComentario(self):
+        return self.__controleComentario
 
     @topico_atual.setter
     def topico_atual(self, topico):

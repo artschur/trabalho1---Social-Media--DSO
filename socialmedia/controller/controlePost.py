@@ -75,28 +75,16 @@ class ControlePost:
             elif escolha == -1:
                 print(self.controleTopicos.get_topico())
 
-    def curtir_comentario(self, comentario):
-        if self.__controleSistema.usuario_logado not in comentario.likes:
-            comentario.likes.append(self.__controleSistema.usuario_logado)
-            print("Comentário curtido com sucesso!")
-        else:
-            print("Você já curtiu este comentário.")
-        self.listar_posts()
-
-    def comentar(self, post):
-        conteudo = self.telaPost.comentar_post()
-        comentario = Comentario(conteudo, self.__controleSistema.usuario_logado)
-        post.comentarios.append(comentario)
-        self.listar_posts()
-
     def interage_comentarios(self, post):
         escolha = self.telaPost.mostrar_comentarios(post)
         if escolha == "1":
             try:
                 indice_comentario = int(self.telaPost.selecionar_comentario(post)) - 1
                 if 0 <= indice_comentario < len(post.comentarios):
-                    self.curtir_comentario(post.comentarios[indice_comentario])
-                    self.listar_posts()
+                    self.controleSistema.controleComentario.gerenciar_comentario(
+                        post.comentarios[indice_comentario],
+                        post
+                    )
             except ValueError:
                 print("Digite um número válido.")
         elif escolha == "2":
