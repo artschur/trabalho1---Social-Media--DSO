@@ -34,11 +34,10 @@ class Usuario:
         post.adicionar_comentario(conteudo_comentario, autor=self)
 
     def curtir_post(self, post: "Post"):
-        post.receber_like(Like(usuario=self))
+        post.receber_like()
 
     def curtir_comentario(self, comentario):  # isso vai ter que ir pro mvc depois.
-        comentario.receber_like(Like(usuario=self))
+        comentario.receber_like()
 
 
 arthur = Usuario("arthur", "123")
-print(arthur.username)

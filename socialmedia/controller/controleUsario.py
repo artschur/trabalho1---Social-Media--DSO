@@ -1,6 +1,7 @@
 from socialmedia.usuario import Usuario
 from socialmedia.admin import Admin
 from socialmedia.views.telaUsuario import TelaUsuario
+from socialmedia.exceptions.exceptions import *
 
 
 class ControleUsuario:
@@ -21,30 +22,27 @@ class ControleUsuario:
     @property
     def controleSistema(self):
         return self.__controleSistema
-    
-    def adicionar_admin(self, username, senha):
-        assert self.usuario_is_disponivel(username=username)
-        self.lista_admins.append(Admin(username, senha))
-        return True
 
-    def cadastrar(self, usuario : Usuario):
-        assert self.usuario_is_disponivel(usuario.username), "Usuário já existe"
+    def adicionar_admin(self, username, senha):
+        if not self.usuario_is_disponivel(username):
+            raise UsuarioJaExistenteError(username)
+        admin = Admin(username, senha)
+        self.lista_admins.append(admin)
+        return admin
+
+    def cadastrar(self, usuario: Usuario):
+        if not self.usuario_is_disponivel(usuario.username):
+            raise UsuarioJaExistenteError(usuario.username)
         self.lista_usuarios.append(usuario)
         return usuario
-    def login_auth(self, username, senha):
-        assert not self.usuario_is_disponivel(username), "Usuário não encontrado"
 
+    def login_auth(self, username, senha):
         for u in self.__lista_usuarios + self.__lista_admins:
             if u.username == username and u.senha == senha:
-                self.__controleSistema.usuario_logado = u
+                self.controleSistema.usuarioLogado = u
                 return {"user": u, "admin": isinstance(u, Admin)}
-
-        return "Usuário ou senha inválidos"
-
-    def deslogar(self):
-        self.controleSistema.usuario_logado = None
-        return "Deslogado com sucesso"
-
+        raise CredenciaisInvalidasError()
+        return None
 
     def usuario_is_disponivel(self, username):
         for u in self.lista_usuarios + self.lista_admins:
@@ -52,50 +50,67 @@ class ControleUsuario:
                 return False
         return True
 
-    def tela_inicial(self):
-        escolha = self.__tela_usuario.tela_inicial()
-        escolhas = {
-            "1": self.tela_login,
-            "2": self.tela_cadastro,
-            "3": self.tela_logout,
-        }
-        assert escolha in escolhas.keys()
-        return escolhas[escolha]()
-
     def tela_login(self):
-        dictLogin = self.__tela_usuario.tela_login()
+        try:
+            dictLogin = self.__tela_usuario.tela_login()
 
-        if not dictLogin["username"]:
-            return "O nome de usuário não pode ser vazio."
+            if not dictLogin["username"] or not dictLogin["senha"]:
+                print("Username e senha são obrigatórios.")
+                return None
 
-        if not dictLogin["senha"]:
-            return "A senha não pode ser vazia."
+            login_result = self.login_auth(dictLogin["username"], dictLogin["senha"])
+            if login_result:
+                return login_result
+            return None
+        except CredenciaisInvalidasError as e:
+            print(e.message)
+            self.controleSistema.logout()
+            return None
+        except Exception as e:
+            print(f"Erro no login: {str(e)}")
+            return None
 
-        login_result = self.login_auth(dictLogin["username"], dictLogin["senha"])
+    def tela_inicial(self):
+        try:
+            escolha = self.__tela_usuario.tela_inicial()
+            escolhas = {
+                "1": self.tela_login,
+                "2": self.tela_cadastro,
+                "3": self.tela_logout,
+            }
+            if escolha not in escolhas:
+                print("Opção inválida!")
+                return None
 
-        if login_result != False: ##
-            print("Logado com sucesso!")
-            return login_result
-        else:
-            print("erro no login")
-            return False
-
+            result = escolhas[escolha]()
+            return result
+        except Exception as e:
+            print(f"Erro: {str(e)}")
+            return None
     def tela_cadastro(self):
         dictCadastro = self.__tela_usuario.tela_cadastro()
+
         if not dictCadastro["username"]:
-            return "O nome de usuário não pode ser vazio."
+            raise CampoVazioError("username")
 
         if not dictCadastro["senha"]:
-            return "A senha não pode ser vazia."
+            raise CampoVazioError("senha")
+
+        if not dictCadastro["admin"]:
+            raise CampoVazioError("admin")
 
         try:
-            usuario = self.cadastrar(Usuario(dictCadastro["username"], dictCadastro["senha"]))
+            if dictCadastro["admin"] == "s":
+                usuario = self.adicionar_admin(dictCadastro["username"], dictCadastro["senha"])
+            else:
+                usuario = self.cadastrar(Usuario(dictCadastro["username"], dictCadastro["senha"]))
+            self.controleSistema.usuarioLogado = usuario
             print("Cadastro realizado com sucesso!")
             return {"user": usuario, "admin": isinstance(usuario, Admin)}
-        except AssertionError as e:
-            print(f"Erro no cadastro: {e}")
+        except UsuarioJaExistenteError as e:
+            print(e.message)
 
     def tela_logout(self):
-        self.deslogar()
-        print("Você foi deslogado com sucesso!")
-        return True
+        self.controleSistema.logout()
+        print("Até mais!")
+        return exit()

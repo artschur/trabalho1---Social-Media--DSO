@@ -16,10 +16,12 @@ from socialmedia.controller.controleTopicos import ControleTopico
 
 class ControlePost:
     def __init__(self, controladorSistema, controleTopicos):
-        self.__posts = []
+        self.__posts = [Post("Post 1", "Conteúdo do post 1", Admin("admin", "admin"), Topico("Economia")),
+                        Post("Post 2", "Conteúdo do post 2", Admin("admin", "admin"), Topico("Tecnologia"))]
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
         self.__controleTopicos = controleTopicos
+
     @property
     def controleSistema(self):
         return self.__controleSistema
@@ -37,15 +39,14 @@ class ControlePost:
         return self.__posts
 
     def usuario_e_admin(self):
-        usuarioLogado = self.__controleSistema.usuarioLogado
+        usuarioLogado = self.controleSistema.usuarioLogado
         if not isinstance(usuarioLogado, Admin):
             raise AcaoNaoAutorizadaException(
-                "Você precisa estar logado como admin para criar um post.")
+                "Você precisa ser admin para criar um post.")
 
     def criar_post(self):
         try:
             self.usuario_e_admin()
-
             dados_post = self.__telaPost.tela_criar_post(self.controleTopicos.topicos)
             if not (dados_post['titulo'] and dados_post['conteudo']):
                 raise EntradaInvalidaException("Erro: Título ou conteúdo do post está faltando.")
@@ -57,53 +58,63 @@ class ControlePost:
             novo_post = Post(dados_post['titulo'], dados_post['conteudo'],
                              self.__controleSistema.usuarioLogado, topico_escolhido)
             self.__posts.append(novo_post)
-            self.post_individual(novo_post)
-            return True
+            result = self.post_individual(novo_post)
+            return result
         except (AcaoNaoAutorizadaException, EntradaInvalidaException) as e:
             print(f"Erro: {e}")
             self.listar_posts()
 
     def listar_posts(self, topico=None):
-        try:
-            # Filter posts by topic if specified
-            topico_posts = self.posts
-            if topico:
-                topico_posts = [post for post in self.posts if post.topico.nome == topico.nome]
-                print(f"\n=== Posts do tópico: {topico.nome} ===")
-                if not topico_posts:
-                    print("Nenhum post encontrado para este tópico.")
-                    print("Exibindo todos os posts.")
-                    self.controleSistema.topico_atual = None
-                    topico_posts = self.posts
+        while True:
+            try:
+                if not self.controleSistema.usuarioLogado:
+                    return "logout"
 
-            escolha = int(self.telaPost.mostrar_lista_posts(
-                topico_posts,
-                self.controleSistema.topico_atual
-            ))
+                topico_posts = self.posts
+                if topico:
+                    topico_posts = [post for post in self.posts if post.topico.nome == topico.nome]
+                    if not topico_posts:
+                        print("Nenhum post encontrado para este tópico.")
+                        print("Exibindo todos os posts.")
+                        self.controleSistema.topico_atual = None
+                        topico_posts = self.posts
 
-            if escolha == 1:  # Create new post
-                self.criar_post()
-                self.listar_posts(topico)
-            elif escolha == 0:
-                novo_topico = self.controleTopicos.get_topico()
-                if novo_topico:
-                    self.listar_posts(novo_topico)
-            else:
-                indice = escolha - 2
-                if 0 <= indice < len(topico_posts):
-                    self.post_individual(topico_posts[indice])
+                escolha = self.telaPost.mostrar_lista_posts(
+                    topico_posts,
+                    self.controleSistema.topico_atual
+                )
+
+                # Handle logout command
+                if escolha.lower() == "e":
+                    return "logout"
+
+                if not escolha.isdigit():
+                    print("Opção inválida. Por favor, digite um número válido ou 'E' para sair.")
+                    continue
+
+                escolha = int(escolha)
+
+                if escolha == 1:
+                    if self.criar_post() == "logout":
+                        return "logout"
+                    continue
+                elif escolha == 0:
+                    return None
                 else:
-                    raise PostNaoEncontradoException("Post não encontrado.")
+                    indice = escolha - 2
+                    if 0 <= indice < len(topico_posts):
+                        resultado = self.post_individual(topico_posts[indice])
+                        if resultado == "logout":
+                            return "logout"
+                    else:
+                        raise PostNaoEncontradoException("Post não encontrado.")
 
-        except ValueError:
-            print("Por favor, digite um número válido.")
-            self.listar_posts(topico)
-        except PostNaoEncontradoException as e:
-            print(f"Erro: {e}")
-            self.listar_posts(topico)
-        except EntradaInvalidaException as e:
-            print(f"Erro: {e}")
-            self.listar_posts(topico)
+            except ValueError:
+                print("Por favor, digite um número válido.")
+            except PostNaoEncontradoException as e:
+                print(f"Erro: {e}")
+            except EntradaInvalidaException as e:
+                print(f"Erro: {e}")
 
     def curtir_comentario(self, comentario):
         try:
@@ -125,7 +136,7 @@ class ControlePost:
                 raise EntradaInvalidaException("Conteúdo do comentário não pode estar vazio.")
             comentario = Comentario(conteudo, self.__controleSistema.usuarioLogado)
             post.comentarios.append(comentario)
-            self.listar_posts(self.controleSistema.topico_atual)
+            print("Comentário adicionado com sucesso!")
         except EntradaInvalidaException as e:
             print(f"Erro: {e}")
             self.listar_posts(self.controleSistema.topico_atual)
@@ -141,8 +152,6 @@ class ControlePost:
                     raise ComentarioNaoEncontradoException("Comentário não encontrado.")
             except (ValueError, ComentarioNaoEncontradoException, EntradaInvalidaException) as e:
                 print(f"Erro: {e}")
-        elif escolha == "2":
-            self.listar_posts(self.controleSistema.topico_atual)
         else:
             print("Escolha inválida")
             self.listar_posts(self.controleSistema.topico_atual)
@@ -156,7 +165,7 @@ class ControlePost:
             if escolha in acoes_com_post:
                 acoes_com_post[escolha](post)
             elif escolha in acoes_sem_post:
-                acoes_sem_post[escolha](self.controleSistema.topico_atual)
+                return "logout"
             else:
                 raise EntradaInvalidaException("Escolha inválida")
         except (ValueError, EntradaInvalidaException) as e:
@@ -170,7 +179,6 @@ class ControlePost:
                 print("Post curtido com sucesso!")
             else:
                 raise AcaoNaoAutorizadaException("Você já curtiu esse post")
-            return self.listar_posts(post.topico)
+            return
         except AcaoNaoAutorizadaException as e:
             print(f"Erro: {e}")
-            self.listar_posts(self.controleSistema.topico_atual)
