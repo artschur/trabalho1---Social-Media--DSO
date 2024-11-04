@@ -2,6 +2,7 @@ from socialmedia.controller.controleUsario import ControleUsuario
 from socialmedia.controller.controlePost import ControlePost
 from socialmedia.services.relatorio import Relatorio
 from socialmedia.controller.controleTopicos import ControleTopico
+from socialmedia.controller.controleComentario import ControleComentario
 
 
 class ControleSistema:
@@ -53,7 +54,13 @@ class ControleSistema:
         self.topico_atual = None
 
     def return_relatorios(self):
-        return self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido()
+        post_mais_curtido, topico_mais_posts, topico_mais_interacoes, autor_mais_curtido = self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido()
+        print(f"Post mais curtido: {post_mais_curtido.titulo} com {post_mais_curtido.count_likes()} curtidas")
+        print(f"Tópico com mais posts: {topico_mais_posts.nome}")
+        print(f"Tópico com mais interações: {topico_mais_interacoes.nome}")
+        print(f"Autor mais curtido: {autor_mais_curtido.username}")
+        return
+
 
 if __name__ == "__main__":
     sis = ControleSistema()

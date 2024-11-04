@@ -29,12 +29,15 @@ class TelaPost:
         print("\n=== Comentários ===")
         for i, comentario in enumerate(post.comentarios, 1):
             print(f"{i}. '{comentario.conteudo}' - {comentario.autor.username} | {comentario.count_likes} likes")
-        print("\n1. Curtir Comentário")
+        print("\n1. Interagir com Comentário")
         print("2. Voltar")
-        return input("Escolha uma opção: ")
+        escolha = input("Escolha uma opção: ")
+        if escolha == "2":
+            return "voltar"
+        return escolha
 
     def selecionar_comentario(self, post):
-        print("\nSelecione o número do comentário que deseja curtir:")
+        print("\nSelecione o número do comentário que deseja interagir:")
         for i, comentario in enumerate(post.comentarios, 1):
             print(
                 f"{i}. '{comentario.conteudo}' - {comentario.autor.username} | {comentario.count_likes} likes")
