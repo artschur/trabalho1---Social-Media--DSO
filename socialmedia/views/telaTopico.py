@@ -11,7 +11,9 @@ class TelaTopico:
             print(f"{i} - {topico.nome}")
         print("0 - Adicionar novo tópico")
         print("Digite 'E' para sair.")
-        return input("Digite o número do tópico para ver os posts (ou 0 para voltar): ")
+        print("Digite o número do tópico para ver os posts: ")
+
+        return input()
 
     def adicionar_topico(self):
         print("\n=== Adicionar Novo Tópico ===")

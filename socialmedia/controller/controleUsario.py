@@ -77,6 +77,7 @@ class ControleUsuario:
                 "1": self.tela_login,
                 "2": self.tela_cadastro,
                 "3": self.tela_logout,
+                "R": self.controleSistema.return_relatorios
             }
             if escolha not in escolhas:
                 print("Opção inválida!")

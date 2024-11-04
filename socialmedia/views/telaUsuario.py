@@ -4,6 +4,7 @@ class TelaUsuario:
         print("1 - Login")
         print("2 - Cadastro")
         print("3 - Sair")
+        print("R - Ver relatorios")
         return input()
 
     def tela_login(self):

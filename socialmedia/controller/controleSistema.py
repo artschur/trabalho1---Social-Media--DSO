@@ -1,8 +1,6 @@
 from socialmedia.controller.controleUsario import ControleUsuario
 from socialmedia.controller.controlePost import ControlePost
-from socialmedia.admin import Admin
-from socialmedia.post import Post
-from socialmedia.topico import Topico
+from socialmedia.services.relatorio import Relatorio
 from socialmedia.controller.controleTopicos import ControleTopico
 
 
@@ -11,12 +9,17 @@ class ControleSistema:
         self.__controleUsuario = ControleUsuario(self)
         self.__controleTopico = ControleTopico(self)
         self.__controlePost = ControlePost(self, self.controleTopico)
+        self.__relatorio = Relatorio(self.__controlePost)
         self.__usuarioLogado = None
         self.__topico_atual = None
 
     @property
     def controleUsuario(self):
         return self.__controleUsuario
+
+    @property
+    def relatorio(self):
+        return self.__relatorio
 
     @property
     def usuarioLogado(self):
@@ -49,7 +52,8 @@ class ControleSistema:
         self.usuarioLogado = None
         self.topico_atual = None
 
-
+    def return_relatorios(self):
+        return self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido()
 
 if __name__ == "__main__":
     sis = ControleSistema()
