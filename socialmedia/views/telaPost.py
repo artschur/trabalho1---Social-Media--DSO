@@ -1,6 +1,6 @@
 class TelaPost:
     def tela_criar_post(self, lista_topicos):
-        print("\n=== Criar Novo Post ===")
+        print("\nCriar Novo Post ")
         titulo = input("Digite o título do post: ").strip()
         conteudo = input("Digite o conteúdo do post: ").strip()
 
@@ -13,20 +13,19 @@ class TelaPost:
         return {"titulo": titulo, "conteudo": conteudo, "topico": topico}
     
     def mostrar_lista_posts(self, posts, topico=None):
-        print("\n=== Lista de Posts ===")
         if topico:
-            print(f"=== Tópico: {topico.nome} ===")
+            print(f"\nLista de Posts - {topico.nome}")
         if not posts:
-            print("Nenhum post encontrado")
+            print("Lista de Posts - Nenhum post encontrado")
             return
-        print("1 - Criar Post")
+        print("1. Criar Post")
         for i, post in enumerate(posts, 2):
-            print(f"{i} - {post.titulo}")
+            print(f"{i}. {post.titulo}")
 
         return input("Digite o numero do post para ver mais detalhes(0 para voltar e 'E' para logout.): ")
 
     def mostrar_comentarios(self, post):
-        print("\n=== Comentários ===")
+        print("\nComentários")
         for i, comentario in enumerate(post.comentarios, 1):
             print(f"{i}. '{comentario.conteudo}' - {comentario.autor.username} | {comentario.count_likes} likes")
         print("\n1. Interagir com Comentário")
@@ -48,11 +47,10 @@ class TelaPost:
 
 
     def vizualizar_post(self, post):
-        print(f"\n=== {post.titulo} ===")
-        print(f"Autor: {post.autor.username}")
+        print(f"\n{post.titulo} - {post.autor.username}")
         print(f"Tópico: {post.topico.nome}")
         print(f"\n{post.conteudo}")
-        print(f"\nLikes: {post.count_likes()}")
+        print(f"\n{post.count_likes()} likes.")
         print(f"Comentários: {post.count_comentarios()}")
         print("\n1. Curtir post")
         print("2. Comentar")

@@ -140,7 +140,6 @@ class ControlePost:
             conteudo = self.telaPost.comentar_post()
             if not conteudo:
                 raise EntradaInvalidaException("Conteúdo do comentário não pode estar vazio.")
-
             comentario = self.controleComentario.adicionar_comentario(post, conteudo)
             if comentario:
                 print("Comentário adicionado com sucesso!")

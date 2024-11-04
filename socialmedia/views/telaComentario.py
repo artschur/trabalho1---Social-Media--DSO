@@ -1,11 +1,11 @@
 class TelaComentario:
     def tela_editar_comentario(self):
-        print("\n=== Editar Comentário ===")
+        print("\nEditar Comentário")
         novo_conteudo = input("Digite o novo conteúdo do comentário: ").strip()
         return novo_conteudo
 
     def mostrar_opcoes_comentario(self):
-        print("\n=== Opções do Comentário ===")
+        print("\nOpções do Comentário")
         print("1. Curtir comentário")
         print("2. Editar comentário")
         print("3. Deletar comentário")
