@@ -1,7 +1,7 @@
 from socialmedia.post import Post
 from socialmedia.comentario import Comentario
 from socialmedia.views.telaComentario import TelaComentario
-
+from socialmedia.admin import Admin
 
 class ControleComentario:
     def __init__(self, controleSistema):
@@ -66,7 +66,7 @@ class ControleComentario:
             self.telaComentario.mostrar_mensagem("Você precisa estar logado para deletar um comentário.")
             return False
 
-        if self.__controleSistema.usuarioLogado != comentario.autor:
+        if self.__controleSistema.usuarioLogado != comentario.autor or self.__controleSistema.usuarioLogado is not isinstance(self.__controleSistema.usuarioLogado, Admin) :
             self.telaComentario.mostrar_mensagem("Você não tem permissão para deletar este comentário.")
             return False
 
