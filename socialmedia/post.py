@@ -1,5 +1,6 @@
 from socialmedia.topico import Topico
 from socialmedia.modelo import Modelo
+
 class Post(Modelo):
     def __init__(self, titulo: str, conteudo: str, autor, topico : Topico):
         super().__init__(autor)
@@ -40,6 +41,10 @@ class Post(Modelo):
     @property
     def comentarios(self):
         return self.__comentarios
+
+    @property
+    def data_criacao(self):
+        return self.__data_criação
 
     def count_likes(self):
         return len(self.likes)
