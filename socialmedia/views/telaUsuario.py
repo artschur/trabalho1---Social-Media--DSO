@@ -1,7 +1,5 @@
 class TelaUsuario:
     def tela_inicial(self):
-        print("Bem vindo ao SocialBlogs!")
-        print("Faça login ou cadastre-se para continuar. Nos somos uma rede social baseada em tópicos.")
         print("Escolha uma opção:")
         print("1 - Login")
         print("2 - Cadastro")
@@ -17,5 +15,6 @@ class TelaUsuario:
         print("Bem vindo a tela de cadastro!")
         username = input("Digite seu username: ")
         senha = input("Digite sua senha: ")
-        return {"username": username, "senha": senha}
+        admin = input("Você é um administrador? (S/N): ").strip().lower()
+        return {"username": username, "senha": senha, "admin": admin}
         

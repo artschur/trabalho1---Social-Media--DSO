@@ -23,7 +23,7 @@ class TelaPost:
         for i, post in enumerate(posts, 2):
             print(f"{i} - {post.titulo}")
 
-        return int(input("Digite o numero do post para ver mais detalhes (ou 0 pra voltar): "))
+        return input("Digite o numero do post para ver mais detalhes(0 para voltar e 'E' para logout.): ")
 
     def mostrar_comentarios(self, post):
         print("\n=== Comentários ===")
