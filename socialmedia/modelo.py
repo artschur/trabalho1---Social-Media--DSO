@@ -1,9 +1,34 @@
 from abc import ABC, abstractmethod
 
-class Modelo(ABC):
-    def __init__(self, autor):
+class ComentarioAbstract(ABC):
+    def __init__(self, conteudo, autor):
+        self.__conteudo = conteudo
         self.__autor = autor
+        self.__likes = []
 
     @property
+    @abstractmethod
+    def conteudo(self):
+        pass
+
+    @conteudo.setter
+    @abstractmethod
+    def conteudo(self, novo_conteudo):
+        pass
+
+
+    @property
+    @abstractmethod
     def autor(self):
-        return self.__autor
+        pass
+
+    @property
+    @abstractmethod
+    def likes(self):
+        pass
+
+    @property
+    @abstractmethod
+    def count_likes(self):
+        pass
+
