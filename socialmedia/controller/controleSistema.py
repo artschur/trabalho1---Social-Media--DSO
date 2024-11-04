@@ -54,15 +54,12 @@ class ControleSistema:
         self.topico_atual = None
 
     def return_relatorios(self):
-        post_mais_curtido, topico_mais_posts, topico_mais_interacoes, autor_mais_curtido = self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido()
-        print(f"Post mais curtido: {post_mais_curtido.titulo} com {post_mais_curtido.count_likes()} curtidas")
-        print(f"Tópico com mais posts: {topico_mais_posts.nome}")
-        print(f"Tópico com mais interações: {topico_mais_interacoes.nome}")
-        print(f"Autor mais curtido: {autor_mais_curtido.username}")
-        return
+        print()
+        return (self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido())
 
 
-if __name__ == "__main__":
+
+def inicializaSistema():
     sis = ControleSistema()
 
     while True:
@@ -75,7 +72,7 @@ if __name__ == "__main__":
         print(f"Bem-vindo, {user['user'].username}!")
         sis.usuarioLogado = user["user"]
 
-        while sis.usuarioLogado:  # Inner loop for logged-in user session
+        while sis.usuarioLogado:
             topico_selecionado = sis.controleTopico.get_topico()
             if topico_selecionado is None:
                 continue
@@ -83,7 +80,6 @@ if __name__ == "__main__":
             sis.topico_atual = topico_selecionado
             result = sis.controlePost.listar_posts(sis.topico_atual)
 
-            # Handle logout from the posts listing
             if result == "logout":
                 sis.logout()
-                break  # Break inner loop to return to login screen
+                break

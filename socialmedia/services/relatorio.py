@@ -15,7 +15,7 @@ class Relatorio:
                 maior_qtd_curtidas = len(post.likes)
 
         if post_mais_curtido:
-            print(f'Post mais curtido: {post_mais_curtido.titulo} , com {maior_qtd_curtidas} curtidas. Feito por {post_mais_curtido.autor.username}')
+            print(f'Post mais curtido: {post_mais_curtido.titulo} , com {maior_qtd_curtidas} curtidas. Feito por {post_mais_curtido.autor.username} \n')
             return post_mais_curtido
 
     def topico_com_mais_posts(self):
@@ -39,7 +39,7 @@ class Relatorio:
                 maior_qtd_posts = contagem
 
         if topico_mais_popular:
-            print(f'Topico com mais posts: {topico_mais_popular.nome} , com {maior_qtd_posts} posts')
+            print(f'Topico com mais posts: {topico_mais_popular.nome} , com {maior_qtd_posts} posts \n')
             return topico_mais_popular
         else:
             print('Nenhum post cadastrado')
@@ -68,7 +68,7 @@ class Relatorio:
                 maior_qtd_interacoes = interacoes
 
         if topico_mais_interacoes:
-            print(f'Tópico com mais interações: {topico_mais_interacoes.nome} , com {maior_qtd_interacoes} interações')
+            print(f'Tópico com mais interações: {topico_mais_interacoes.nome} , com {maior_qtd_interacoes} interações \n')
             return topico_mais_interacoes
         else:
             print('Nenhum post cadastrado')
@@ -97,7 +97,7 @@ class Relatorio:
                 maior_qtd_curtidas = curtidas
 
         if autor_mais_curtido:
-            print(f'Autor mais curtido: {autor_mais_curtido.username} , com {maior_qtd_curtidas} curtidas')
+            print(f'Autor mais curtido: {autor_mais_curtido.username} , com {maior_qtd_curtidas} curtidas \n')
             return autor_mais_curtido
         else:
             print('Nenhum post cadastrado')
