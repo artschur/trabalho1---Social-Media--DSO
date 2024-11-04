@@ -2,6 +2,7 @@ from socialmedia.controller.controleUsario import ControleUsuario
 from socialmedia.controller.controlePost import ControlePost
 from socialmedia.services.relatorio import Relatorio
 from socialmedia.controller.controleTopicos import ControleTopico
+from socialmedia.controller.controleComentario import ControleComentario
 
 
 class ControleSistema:
@@ -53,9 +54,12 @@ class ControleSistema:
         self.topico_atual = None
 
     def return_relatorios(self):
-        return self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido()
+        print()
+        return (self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido())
 
-if __name__ == "__main__":
+
+
+def inicializaSistema():
     sis = ControleSistema()
 
     while True:
@@ -68,7 +72,7 @@ if __name__ == "__main__":
         print(f"Bem-vindo, {user['user'].username}!")
         sis.usuarioLogado = user["user"]
 
-        while sis.usuarioLogado:  # Inner loop for logged-in user session
+        while sis.usuarioLogado:
             topico_selecionado = sis.controleTopico.get_topico()
             if topico_selecionado is None:
                 continue
@@ -76,7 +80,6 @@ if __name__ == "__main__":
             sis.topico_atual = topico_selecionado
             result = sis.controlePost.listar_posts(sis.topico_atual)
 
-            # Handle logout from the posts listing
             if result == "logout":
                 sis.logout()
-                break  # Break inner loop to return to login screen
+                break

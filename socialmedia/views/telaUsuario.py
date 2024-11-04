@@ -8,8 +8,8 @@ class TelaUsuario:
         return input()
 
     def tela_login(self):
-        username = input("Digite seu username: ")
-        senha = input("Digite sua senha: ")
+        username = input("Username: ")
+        senha = input("Senha: ")
         return {"username": username, "senha": senha}
 
     def tela_cadastro(self):

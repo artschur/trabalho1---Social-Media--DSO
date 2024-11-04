@@ -40,7 +40,6 @@ class ControleTopico:
                     continue
                 elif 1 <= escolha <= len(self.topicos):
                     topico_selecionado = self.topicos[escolha - 1]
-                    self.controleSistema.topico_atual = topico_selecionado
                     return topico_selecionado
                 else:
                     print("Escolha inválida.")

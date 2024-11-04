@@ -11,6 +11,7 @@ from socialmedia.topico import Topico
 from socialmedia.views.telaPost import TelaPost
 from socialmedia.comentario import Comentario
 from socialmedia.admin import Admin
+from socialmedia.controller.controleComentario import ControleComentario
 from socialmedia.controller.controleTopicos import ControleTopico
 
 
@@ -21,6 +22,7 @@ class ControlePost:
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
         self.__controleTopicos = controleTopicos
+        self.__controleComentario = ControleComentario(controladorSistema)
 
     @property
     def controleSistema(self):
@@ -37,6 +39,10 @@ class ControlePost:
     @property
     def posts(self):
         return self.__posts
+
+    @property
+    def controleComentario(self):
+        return self.__controleComentario
 
     def usuario_e_admin(self):
         usuarioLogado = self.controleSistema.usuarioLogado
@@ -58,8 +64,8 @@ class ControlePost:
             novo_post = Post(dados_post['titulo'], dados_post['conteudo'],
                              self.__controleSistema.usuarioLogado, topico_escolhido)
             self.__posts.append(novo_post)
-            result = self.post_individual(novo_post)
-            return result
+            return self.post_individual(novo_post)
+
         except (AcaoNaoAutorizadaException, EntradaInvalidaException) as e:
             print(f"Erro: {e}")
             self.listar_posts()
@@ -134,43 +140,55 @@ class ControlePost:
             conteudo = self.telaPost.comentar_post()
             if not conteudo:
                 raise EntradaInvalidaException("Conteúdo do comentário não pode estar vazio.")
-            comentario = Comentario(conteudo, self.__controleSistema.usuarioLogado)
-            post.comentarios.append(comentario)
-            print("Comentário adicionado com sucesso!")
+            comentario = self.controleComentario.adicionar_comentario(post, conteudo)
+            if comentario:
+                print("Comentário adicionado com sucesso!")
+
         except EntradaInvalidaException as e:
             print(f"Erro: {e}")
             self.listar_posts(self.controleSistema.topico_atual)
 
     def interage_comentarios(self, post):
-        escolha = self.telaPost.mostrar_comentarios(post)
-        if escolha == "1":
-            try:
+        try:
+            if not post.comentarios:
+                print("Este post ainda não tem comentários.")
+                return
+
+            escolha = self.telaPost.mostrar_comentarios(post)
+            if escolha == "voltar":
+                return
+
+            if escolha == "1":
                 indice_comentario = int(self.telaPost.selecionar_comentario(post)) - 1
                 if 0 <= indice_comentario < len(post.comentarios):
-                    self.curtir_comentario(post.comentarios[indice_comentario])
+                    comentario = post.comentarios[indice_comentario]
+                    return self.controleComentario.gerenciar_comentario(comentario, post)
                 else:
                     raise ComentarioNaoEncontradoException("Comentário não encontrado.")
-            except (ValueError, ComentarioNaoEncontradoException, EntradaInvalidaException) as e:
-                print(f"Erro: {e}")
-        else:
-            print("Escolha inválida")
-            self.listar_posts(self.controleSistema.topico_atual)
+            else:
+                print("Escolha inválida")
+                self.listar_posts(self.controleSistema.topico_atual)
+        except ValueError:
+            print("Por favor, digite um número válido.")
+        except ComentarioNaoEncontradoException as e:
+            print(f"Erro: {e}")
 
     def post_individual(self, post):
-        try:
-            escolha = int(self.telaPost.vizualizar_post(post))
-            acoes_com_post = {1: self.curtir_post, 2: self.comentar, 3: self.interage_comentarios}
-            acoes_sem_post = {4: self.listar_posts}
+        while True:
+            try:
+                escolha = int(self.telaPost.vizualizar_post(post))
+                acoes_com_post = {1: self.curtir_post, 2: self.comentar, 3: self.interage_comentarios}
+                acoes_sem_post = {4: self.listar_posts}
 
-            if escolha in acoes_com_post:
-                acoes_com_post[escolha](post)
-            elif escolha in acoes_sem_post:
-                return "logout"
-            else:
-                raise EntradaInvalidaException("Escolha inválida")
-        except (ValueError, EntradaInvalidaException) as e:
-            print(f"Erro: {e}")
-            self.listar_posts(self.controleSistema.topico_atual)
+                if escolha in acoes_com_post:
+                    acoes_com_post[escolha](post)
+                elif escolha in acoes_sem_post:
+                    return "logout"
+                else:
+                    raise EntradaInvalidaException("Escolha inválida")
+            except (ValueError, EntradaInvalidaException) as e:
+                print(f"Erro: {e}")
+                self.listar_posts(self.controleSistema.topico_atual)
 
     def curtir_post(self, post):
         try:
