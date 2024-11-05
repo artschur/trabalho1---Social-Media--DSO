@@ -66,7 +66,7 @@ class ControleComentario:
             self.telaComentario.mostrar_mensagem("Você precisa estar logado para deletar um comentário.")
             return False
 
-        if self.__controleSistema.usuarioLogado != comentario.autor or self.__controleSistema.usuarioLogado is not isinstance(self.__controleSistema.usuarioLogado, Admin) :
+        if self.__controleSistema.usuarioLogado != comentario.autor:
             self.telaComentario.mostrar_mensagem("Você não tem permissão para deletar este comentário.")
             return False
 
