@@ -7,40 +7,49 @@ class Relatorio:
         sg.theme('Reddit')
 
     def mostrar_relatorios(self):
-        # Get all report data first
         post_curtido = self.__get_post_mais_curtido()
         topico_posts = self.__get_topico_mais_posts()
         topico_interacoes = self.__get_topico_mais_interacoes()
         autor = self.__get_autor_mais_curtido()
 
         layout = [
-            [sg.Text("Relatórios do Sistema", font=('Helvetica', 16, 'bold'),
-                     justification='center')],
+            [sg.Text("Relatórios do Sistema", font=('Helvetica', 20, 'bold'),
+                     justification='center', expand_x=True, pad=(0, 20))],
 
             # Post mais curtido
             [sg.Frame("Post Mais Curtido", [
-                [sg.Text(self.__format_post_curtido(post_curtido), key='-POST-')]
-            ], font=('Helvetica', 12))],
+                [sg.Text(self.__format_post_curtido(post_curtido), key='-POST-',
+                         font=('Helvetica', 14), size=(60, 15))]
+            ], font=('Helvetica', 18), size=(800, 100))],
 
             # Tópico com mais posts
             [sg.Frame("Tópico com Mais Posts", [
-                [sg.Text(self.__format_topico_posts(topico_posts), key='-TOPICO-')]
-            ], font=('Helvetica', 12))],
+                [sg.Text(self.__format_topico_posts(topico_posts), key='-TOPICO-',
+                         font=('Helvetica', 14), size=(60, 15))]
+            ], font=('Helvetica', 18), size=(800, 100))],
 
             # Tópico com mais interações
             [sg.Frame("Tópico com Mais Interações", [
-                [sg.Text(self.__format_topico_interacoes(topico_interacoes), key='-INTERACOES-')]
-            ], font=('Helvetica', 12))],
+                [sg.Text(self.__format_topico_interacoes(topico_interacoes), key='-INTERACOES-',
+                         font=('Helvetica', 14), size=(60, 15))]
+            ], font=('Helvetica', 18), size=(800, 100))],
 
             # Autor mais curtido
             [sg.Frame("Autor Mais Curtido", [
-                [sg.Text(self.__format_autor_curtido(autor), key='-AUTOR-')]
-            ], font=('Helvetica', 12))],
+                [sg.Text(self.__format_autor_curtido(autor), key='-AUTOR-', font=('Helvetica', 14),
+                         size=(60, 3))]
+            ], font=('Helvetica', 18), size=(800, 100))],
 
-            [sg.Button('Fechar', key='-CLOSE-', size=(10, 1))]
+            [sg.Button('Fechar', key='-CLOSE-', size=(12, 1), font=('Helvetica', 14))]
         ]
 
-        window = sg.Window('Relatórios', layout, modal=True)
+        window = sg.Window(
+            'Relatórios',
+            layout,
+            modal=True,
+            size=(900, 600),
+            resizable=True
+        )
         event, _ = window.read()
         window.close()
 
@@ -136,7 +145,6 @@ class Relatorio:
         autor, curtidas = data
         return f"Username: {autor.username}\nTotal de Curtidas: {curtidas}"
 
-    # Original methods now just call the visualization
     def post_mais_curtido(self):
         self.mostrar_relatorios()
 

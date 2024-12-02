@@ -31,7 +31,7 @@ class TelaUsuario:
              sg.Button('Cancelar', key='-CANCELAR-', size=(15, 1), font=('Helvetica', 14))]
         ]
 
-        window = sg.Window('Login', layout, size=(600, 600))
+        window = sg.Window('Login', layout, element_justification='center', finalize=True, size=(600, 600))
         event, values = window.read()
 
         result = None
@@ -58,7 +58,7 @@ class TelaUsuario:
              sg.Button('Cancelar', key='-CANCELAR-', size=(15, 1), font=('Helvetica', 14))]
         ]
 
-        window = sg.Window('Cadastro', layout, modal=True, element_justification='center', finalize=True)
+        window = sg.Window('Cadastro', layout, element_justification='center', default_element_size=23,finalize=True, size=(600, 600))
         event, values = window.read()
 
         result = None

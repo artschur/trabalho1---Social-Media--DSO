@@ -17,7 +17,7 @@ class TelaPost:
             [sg.Button('Criar Post', key='-CRIAR-'), sg.Button('Cancelar', key='-CANCELAR-')]
         ]
 
-        window = sg.Window('Criar Post', layout, modal=True, size=(800, 600))
+        window = sg.Window('Criar Post', layout, modal=True, size=(600, 600))
 
         while True:
             event, values = window.read()
@@ -41,24 +41,25 @@ class TelaPost:
     def mostrar_lista_posts(self, posts, topico=None):
         header = f"Lista de Posts - {topico.nome if topico else 'Todos os Posts'}"
 
-        post_list = [[sg.Text(header, font=('Helvetica', 14))]]
+        post_list = [[sg.Text(header, font=('Helvetica', 20))]]
         if not posts:
             post_list.append([sg.Text("Nenhum post encontrado")])
 
         post_list.extend([
-            [sg.Button('Criar Post', key='1', size=(30, 1))],
-            [sg.Text("Posts:")],
+            [sg.Button('Criar Post', key='1', size=(30, 2))],
+            [sg.Text("Posts:", font=('Helvetica', 16))],
         ])
 
         for i, post in enumerate(posts, 2):
-            post_list.append([sg.Button(f"{post.titulo}", key=str(i), size=(30, 1))])
+            post_list.append([sg.Button(f"{post.titulo}", key=str(i), size=(30, 2), font=('Helvetica', 16))])
 
         post_list.extend([
             [sg.Text("")],
             [sg.Button('Voltar', key='0'), sg.Button('Logout', key='E')]
-        ])
+            ])
 
-        window = sg.Window('Lista de Posts', post_list, modal=True)
+
+        window = sg.Window('Lista de Posts', post_list, modal=True, size=(600, 600), element_justification='center')
         event, _ = window.read()
         window.close()
 
@@ -66,14 +67,15 @@ class TelaPost:
 
     def mostrar_comentarios(self, post):
         layout = [
-            [sg.Text("Comentários", font=('Helvetica', 14))],
-            *[[sg.Text(f"{i}. '{c.conteudo}' - {c.autor.username} | {c.count_likes} likes")]
+            [sg.Text("Comentários", font=('Helvetica', 16))],
+            *[[sg.Text(f"{i}. '{c.conteudo}' - {c.autor.username} | {c.count_likes} likes",
+                       font=('Helvetica', 16))]
               for i, c in enumerate(post.comentarios, 1)],
             [sg.Text("")],
             [sg.Button('Interagir com Comentário', key='1'), sg.Button('Voltar', key='2')]
         ]
 
-        window = sg.Window('Comentários', layout, modal=True, resizable=True)
+        window = sg.Window('Comentários', layout, modal=True, resizable=True, size=(600, 600),element_justification='center')
         event, _ = window.read()
         window.close()
 
@@ -81,14 +83,14 @@ class TelaPost:
 
     def selecionar_comentario(self, post):
         layout = [
-            [sg.Text("Selecione o comentário para interagir:", font=('Helvetica', 12))],
+            [sg.Text("Selecione o comentário para interagir:", font=('Helvetica', 16))],
             *[[sg.Button(f"{i}. '{c.conteudo}' - {c.autor.username} | {c.count_likes} likes",
                          key=str(i), size=(50, 1))]
               for i, c in enumerate(post.comentarios, 1)],
             [sg.Button('Voltar', key='-VOLTAR-')]
         ]
 
-        window = sg.Window('Selecionar Comentário', layout, modal=True)
+        window = sg.Window('Selecionar Comentário', layout, modal=True, size=(600, 600))
         event, _ = window.read()
         window.close()
 
@@ -101,7 +103,7 @@ class TelaPost:
             [sg.Button('Enviar', key='-ENVIAR-'), sg.Button('Cancelar', key='-CANCELAR-')]
         ]
 
-        window = sg.Window('Comentar Post', layout, modal=True)
+        window = sg.Window('Comentar Post', layout, modal=True, size=(600, 600))
         event, values = window.read()
         comentario = values['-COMENTARIO-'].strip() if event == '-ENVIAR-' else ''
         window.close()
@@ -110,17 +112,31 @@ class TelaPost:
 
     def vizualizar_post(self, post):
         layout = [
-            [sg.Text(f"{post.titulo} - {post.autor.username}", font=('Helvetica', 14))],
-            [sg.Text(f"Tópico: {post.topico.nome}")],
-            [sg.Multiline(post.conteudo, size=(50, 10), disabled=True)],
-            [sg.Text(f"{post.count_likes()} likes | {post.count_comentarios()} comentários")],
-            [sg.Button('Curtir post', key='1')],
-            [sg.Button('Comentar', key='2')],
-            [sg.Button('Ver comentários', key='3')],
-            [sg.Button('Voltar', key='4')]
+            [sg.Text(f"{post.titulo} - {post.autor.username}", font=('Helvetica', 18),
+                     justification='center', expand_x=True)],
+            [sg.Text(f"Tópico: {post.topico.nome}", font=('Helvetica', 14), justification='center',
+                     expand_x=True)],
+            [sg.Multiline(post.conteudo, size=(50, 10), disabled=True, font=('Helvetica', 12),
+                          justification='center', expand_x=True)],
+            [sg.Text(f"{post.count_likes()} likes | {post.count_comentarios()} comentários",
+                     font=('Helvetica', 14), justification='center', expand_x=True)],
+            [sg.Button('Curtir post', key='1', size=(20, 2), font=('Helvetica', 14))],
+            [sg.Button('Comentar', key='2', size=(20, 2), font=('Helvetica', 14))],
+            [sg.Button('Ver comentários', key='3', size=(20, 2), font=('Helvetica', 14))],
+            [sg.Button('Voltar', key='4', size=(20, 2), font=('Helvetica', 14))]
         ]
 
-        window = sg.Window('Visualizar Post', layout, modal=True, resizable=True)
+        centered_layout = [[sg.Column(layout, element_justification='center',
+                                      justification='center', expand_x=True, expand_y=True)]]
+
+        window = sg.Window(
+            'Visualizar Post',
+            centered_layout,
+            modal=True,
+            resizable=True,
+            size=(600, 600),
+            element_justification='center'
+        )
         event, _ = window.read()
         window.close()
 
