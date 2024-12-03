@@ -29,14 +29,21 @@ class TelaComentario:
 
     def mostrar_opcoes_comentario(self):
         layout = [
-            [sg.Text("Opções do Comentário")],
-            [sg.Button('Curtir comentário', key='1', size=(20, 1))],
-            [sg.Button('Editar comentário', key='2', size=(20, 1))],
-            [sg.Button('Deletar comentário', key='3', size=(20, 1))],
-            [sg.Button('Voltar', key='4', size=(20, 1))]
+            [sg.Text("Opções do Comentário", font=('Helvetica', 15, 'bold'), justification='center')],
+            [sg.Button('Curtir comentário', key='1', size=(40, 3))],
+            [sg.Button('Editar comentário', key='2', size=(40, 3))],
+            [sg.Button('Deletar comentário', key='3', size=(40, 3))],
+            [sg.Button('Voltar', key='4', size=(40, 3))]
         ]
 
-        window = sg.Window('Opções do Comentário', layout, modal=True)
+        window = sg.Window(
+            'Opções do Comentário',
+            layout,
+            modal=True,
+            size=(600, 300),
+            resizable=True,
+            element_justification='center'
+        )
 
         event, _ = window.read()
         window.close()

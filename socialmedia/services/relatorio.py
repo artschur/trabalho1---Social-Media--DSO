@@ -50,8 +50,11 @@ class Relatorio:
             size=(900, 600),
             resizable=True
         )
-        event, _ = window.read()
-        window.close()
+        while True:
+            event, _ = window.read()
+            if event == sg.WINDOW_CLOSED or event == '-CLOSE-':
+                window.close()
+                break
 
     def __get_post_mais_curtido(self):
         if not self.__controle_post.posts:
@@ -146,13 +149,13 @@ class Relatorio:
         return f"Username: {autor.username}\nTotal de Curtidas: {curtidas}"
 
     def post_mais_curtido(self):
-        self.mostrar_relatorios()
+        return self.__get_post_mais_curtido()
 
     def topico_com_mais_posts(self):
-        self.mostrar_relatorios()
+        return self.__get_topico_mais_posts()
 
     def topico_com_mais_interacoes(self):
-        self.mostrar_relatorios()
+        return self.__get_topico_mais_interacoes()
 
     def autor_mais_curtido(self):
         self.mostrar_relatorios()
