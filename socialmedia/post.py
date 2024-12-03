@@ -1,13 +1,19 @@
 from socialmedia.topico import Topico
+from uuid import uuid4
 
 class Post():
     def __init__(self, titulo: str, conteudo: str, autor, topico : Topico):
+        self.__id = uuid4().hex
         self.__titulo = titulo
         self.__conteudo = conteudo
         self.__autor = autor
         self.__likes = []
         self.__comentarios = []
         self.__topico = topico
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def conteudo(self):

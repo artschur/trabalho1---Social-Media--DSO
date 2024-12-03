@@ -6,6 +6,10 @@ class Comentario(ComentarioAbstract):
 
 
     @property
+    def id(self):
+        return self.__id
+
+    @property
     def autor(self):
         return self._ComentarioAbstract__autor
     @property

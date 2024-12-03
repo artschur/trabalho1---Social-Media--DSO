@@ -1,28 +1,24 @@
 from socialmedia.exceptions.exceptions import (
-    UsuarioNaoEncontradoException,
-    CredenciaisInvalidasException,
+
     PostNaoEncontradoException,
     ComentarioNaoEncontradoException,
     AcaoNaoAutorizadaException,
     EntradaInvalidaException
 )
 from socialmedia.post import Post
-from socialmedia.topico import Topico
 from socialmedia.views.telaPost import TelaPost
-from socialmedia.comentario import Comentario
 from socialmedia.admin import Admin
 from socialmedia.controller.controleComentario import ControleComentario
+from socialmedia.daos.dao_post import PostsDAO
 from socialmedia.controller.controleTopicos import ControleTopico
 
-
 class ControlePost:
-    def __init__(self, controladorSistema, controleTopicos):
-        self.__posts = [Post("Post 1", "Conteúdo do post 1", Admin("admin", "admin"), Topico("Economia")),
-                        Post("Post 2", "Conteúdo do post 2", Admin("admin", "admin"), Topico("Tecnologia"))]
+    def __init__(self, controladorSistema, controleTopicos: ControleTopico):
         self.__controleSistema = controladorSistema
         self.__telaPost = TelaPost()
         self.__controleTopicos = controleTopicos
         self.__controleComentario = ControleComentario(controladorSistema)
+        self.__dao = PostsDAO()
 
     @property
     def controleSistema(self):
@@ -36,13 +32,14 @@ class ControlePost:
     def telaPost(self):
         return self.__telaPost
 
-    @property
-    def posts(self):
-        return self.__posts
 
     @property
     def controleComentario(self):
         return self.__controleComentario
+
+    @property
+    def dao(self):
+        return self.__dao
 
     def usuario_e_admin(self):
         usuarioLogado = self.controleSistema.usuarioLogado
@@ -53,7 +50,7 @@ class ControlePost:
     def criar_post(self):
         try:
             self.usuario_e_admin()
-            dados_post = self.__telaPost.tela_criar_post(self.controleTopicos.topicos)
+            dados_post = self.__telaPost.tela_criar_post(self.controleTopicos.dao.get_all())
             if not (dados_post['titulo'] and dados_post['conteudo']):
                 raise EntradaInvalidaException("Erro: Título ou conteúdo do post está faltando.")
 
@@ -63,7 +60,7 @@ class ControlePost:
 
             novo_post = Post(dados_post['titulo'], dados_post['conteudo'],
                              self.__controleSistema.usuarioLogado, topico_escolhido)
-            self.__posts.append(novo_post)
+            self.dao.adicionarPost(novo_post)
             return self.post_individual(novo_post)
 
         except (AcaoNaoAutorizadaException, EntradaInvalidaException) as e:
@@ -76,21 +73,20 @@ class ControlePost:
                 if not self.controleSistema.usuarioLogado:
                     return "logout"
 
-                topico_posts = self.posts
+                topico_posts = self.dao.get_all()
                 if topico:
-                    topico_posts = [post for post in self.posts if post.topico.nome == topico.nome]
+                    topico_posts = [post for post in self.dao.get_all() if post.topico.nome == topico.nome]
                     if not topico_posts:
                         print("Nenhum post encontrado para este tópico.")
                         print("Exibindo todos os posts.")
                         self.controleSistema.topico_atual = None
-                        topico_posts = self.posts
+                        topico_posts = self.dao.get_all()
 
                 escolha = self.telaPost.mostrar_lista_posts(
                     topico_posts,
                     self.controleSistema.topico_atual
                 )
 
-                # Handle logout command
                 if escolha.lower() == "e":
                     return "logout"
 

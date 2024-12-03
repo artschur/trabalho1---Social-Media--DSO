@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from uuid import uuid4
 
 class ComentarioAbstract(ABC):
     def __init__(self, conteudo, autor):
+        self.__id = uuid4().hex
         self.__conteudo = conteudo
         self.__autor = autor
         self.__likes = []
