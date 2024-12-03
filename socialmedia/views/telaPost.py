@@ -46,12 +46,12 @@ class TelaPost:
             post_list.append([sg.Text("Nenhum post encontrado")])
 
         post_list.extend([
-            [sg.Button('Criar Post', key='1', size=(30, 2))],
+            [sg.Button('Criar Post', key='1', button_color='black', size=(10, 2))],
             [sg.Text("Posts:", font=('Helvetica', 16))],
         ])
 
         for i, post in enumerate(posts, 2):
-            post_list.append([sg.Button(f"{post.titulo}", key=str(i), size=(30, 2), font=('Helvetica', 16))])
+            post_list.append([sg.Button(f"{post.titulo}", key=str(i), size=(20, 2), font=('Helvetica', 16))])
 
         post_list.extend([
             [sg.Text("")],

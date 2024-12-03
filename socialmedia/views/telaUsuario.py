@@ -7,6 +7,7 @@ class TelaUsuario:
 
     def tela_inicial(self):
         layout = [
+            [sg.Text("Social Networks", font=('Courier', 37, 'bold'), justification='center')],
             [sg.Text("Bem-vindo!", font=('Helvetica', 24), justification='center')],
             [sg.Button('Login', key='1', size=(20, 2), font=('Helvetica', 16))],
             [sg.Button('Cadastro', key='2', size=(20, 2), font=('Helvetica', 16))],
