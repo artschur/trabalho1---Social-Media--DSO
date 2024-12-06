@@ -29,7 +29,6 @@ class ControleUsuario:
         if not self.usuario_is_disponivel(usuario.username):
             raise UsuarioJaExistenteError(usuario.username)
         self.dao.addUsuario(usuario)
-        print(self.dao.get_all())
         return usuario
 
     def login_auth(self, username, senha):
@@ -63,8 +62,7 @@ class ControleUsuario:
             self.controleSistema.logout()
             return None
         except Exception as e:
-            print(f"Erro no login: {str(e)}")
-            return None
+            raise CredenciaisInvalidasException('Erro ao logar.')
 
     def tela_inicial(self):
         try:
@@ -77,8 +75,7 @@ class ControleUsuario:
                 "r": self.controleSistema.return_relatorios
             }
             if escolha not in escolhas:
-                print("Opção inválida!")
-                return None
+                raise(EntradaInvalidaException("Escolha inválida."))
 
             result = escolhas[escolha]()
             return result
@@ -99,11 +96,12 @@ class ControleUsuario:
 
         try:
             if dictCadastro["admin"] == "s":
-                usuario = self.dao.addUsuario(Admin(dictCadastro["username"], dictCadastro["senha"]))
+                print("Cadastrando admin")
+                usuario = self.cadastrar(Admin(dictCadastro["username"], dictCadastro["senha"]))
             else:
                 usuario = self.cadastrar(Usuario(dictCadastro["username"], dictCadastro["senha"]))
             self.controleSistema.usuarioLogado = usuario
-            print("Cadastro realizado com sucesso!")
+            print(usuario)
             return {"user": usuario, "admin": isinstance(usuario, Admin)}
         except UsuarioJaExistenteError as e:
             print(e.message)

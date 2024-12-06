@@ -65,7 +65,7 @@ class ControlePost:
 
         except (AcaoNaoAutorizadaException, EntradaInvalidaException) as e:
             print(f"Erro: {e}")
-            self.listar_posts()
+            return None
 
     def listar_posts(self, topico=None):
         while True:
@@ -75,12 +75,13 @@ class ControlePost:
 
                 topico_posts = self.dao.get_all()
                 if topico:
-                    topico_posts = [post for post in self.dao.get_all() if post.topico.nome == topico.nome]
+                    topico_posts = [post for post in self.dao.get_all() if
+                                    post.topico.nome == topico.nome]
                     if not topico_posts:
                         print("Nenhum post encontrado para este tópico.")
                         print("Exibindo todos os posts.")
                         self.controleSistema.topico_atual = None
-                        topico_posts = self.dao.get_all()
+                        topico_posts = list(self.dao.get_all())
 
                 escolha = self.telaPost.mostrar_lista_posts(
                     topico_posts,
@@ -91,7 +92,7 @@ class ControlePost:
                     return "logout"
 
                 if not escolha.isdigit():
-                    print("Opção inválida. Por favor, digite um número válido ou 'E' para sair.")
+                    raise EntradaInvalidaException("Escolha inválida.")
                     continue
 
                 escolha = int(escolha)
@@ -108,6 +109,7 @@ class ControlePost:
                         resultado = self.post_individual(topico_posts[indice])
                         if resultado == "logout":
                             return "logout"
+                        continue
                     else:
                         raise PostNaoEncontradoException("Post não encontrado.")
 
@@ -158,33 +160,36 @@ class ControlePost:
                 indice_comentario = int(self.telaPost.selecionar_comentario(post)) - 1
                 if 0 <= indice_comentario < len(post.comentarios):
                     comentario = post.comentarios[indice_comentario]
-                    return self.controleComentario.gerenciar_comentario(comentario, post)
+                    resposta =  self.controleComentario.gerenciar_comentario(comentario, post)
+                    if not resposta:
+                        return self.listar_posts(self.controleSistema.topico_atual)
+                    return resposta
+
                 else:
                     raise ComentarioNaoEncontradoException("Comentário não encontrado.")
             else:
                 print("Escolha inválida")
                 self.listar_posts(self.controleSistema.topico_atual)
         except ValueError:
-            print("Por favor, digite um número válido.")
+            raise EntradaInvalidaException("Escolha inválida.")
         except ComentarioNaoEncontradoException as e:
-            print(f"Erro: {e}")
+            raise ComentarioNaoEncontradoException("Comentário não encontrado.")
 
     def post_individual(self, post):
         while True:
             try:
                 escolha = int(self.telaPost.vizualizar_post(post))
-                acoes_com_post = {1: self.curtir_post, 2: self.comentar, 3: self.interage_comentarios}
-                acoes_sem_post = {4: self.listar_posts}
+                acoes_com_post = {1: self.curtir_post, 2: self.comentar,
+                                  3: self.interage_comentarios}
 
                 if escolha in acoes_com_post:
                     acoes_com_post[escolha](post)
-                elif escolha in acoes_sem_post:
-                    return "logout"
+                elif escolha == 4:
+                    return None
                 else:
                     raise EntradaInvalidaException("Escolha inválida")
             except (ValueError, EntradaInvalidaException) as e:
-                print(f"Erro: {e}")
-                self.listar_posts(self.controleSistema.topico_atual)
+                raise EntradaInvalidaException()
 
     def curtir_post(self, post):
         try:

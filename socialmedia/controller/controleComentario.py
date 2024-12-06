@@ -73,8 +73,9 @@ class ControleComentario:
 
         if self.telaComentario.confirmar_delecao():
             post.comentarios.remove(comentario)
-            self.__comentarios.remove(comentario)
+            self.__dao.removeComentario(comentario.id)
             self.telaComentario.mostrar_mensagem("Comentário deletado")
+
             return True
         return False
 

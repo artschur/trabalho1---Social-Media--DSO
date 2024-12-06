@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     while True:
         user = sis.telainit()
-        print(user)
+        print(user, 12312)
         if user is None or "user" not in user:
             print("Login falhou. Tente novamente.")
             continue
