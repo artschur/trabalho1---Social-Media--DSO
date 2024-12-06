@@ -1,9 +1,10 @@
 from socialmedia.modelo import ComentarioAbstract
+from uuid import uuid4
 
 class Comentario(ComentarioAbstract):
     def __init__(self, conteudo, autor):
         super().__init__(conteudo=conteudo, autor=autor)
-
+        self.__id = uuid4().hex
 
     @property
     def id(self):

@@ -2,10 +2,11 @@ from socialmedia.post import Post
 from socialmedia.comentario import Comentario
 from socialmedia.views.telaComentario import TelaComentario
 from socialmedia.admin import Admin
+from socialmedia.daos.dao_comentario import ComentariosDAO
 
 class ControleComentario:
     def __init__(self, controleSistema):
-        self.__comentarios = []
+        self.__dao = ComentariosDAO()
         self.__controleSistema = controleSistema
         self.__telaComentario = TelaComentario()
 
@@ -28,7 +29,7 @@ class ControleComentario:
 
         novo_comentario = Comentario(conteudo, self.__controleSistema.usuarioLogado)
         post.comentarios.append(novo_comentario)
-        self.__comentarios.append(novo_comentario)
+        self.__dao.adicionarComentario(novo_comentario)
         return novo_comentario
 
     def editar_comentario(self, comentario: Comentario) -> bool:
