@@ -2,22 +2,17 @@ from socialmedia.usuario import Usuario
 from socialmedia.admin import Admin
 from socialmedia.views.telaUsuario import TelaUsuario
 from socialmedia.exceptions.exceptions import *
-
+from socialmedia.daos.dao_usuario import UsuarioDAO
 
 class ControleUsuario:
     def __init__(self, controladorSistema):
-        self.__lista_usuarios = [Admin("a", "a")]
-        self.__lista_admins = []
         self.__controleSistema = controladorSistema
         self.__tela_usuario = TelaUsuario()
+        self.__dao = UsuarioDAO()
 
     @property
-    def lista_usuarios(self):
-        return self.__lista_usuarios
-
-    @property
-    def lista_admins(self):
-        return self.__lista_admins
+    def dao(self):
+        return self.__dao
 
     @property
     def controleSistema(self):
@@ -27,28 +22,28 @@ class ControleUsuario:
         if not self.usuario_is_disponivel(username):
             raise UsuarioJaExistenteError(username)
         admin = Admin(username, senha)
-        self.lista_admins.append(admin)
+        self.dao.addUsuario(admin)
         return admin
 
     def cadastrar(self, usuario: Usuario):
         if not self.usuario_is_disponivel(usuario.username):
             raise UsuarioJaExistenteError(usuario.username)
-        self.lista_usuarios.append(usuario)
+        self.dao.addUsuario(usuario)
         return usuario
 
     def login_auth(self, username, senha):
-        for u in self.__lista_usuarios + self.__lista_admins:
-            if u.username == username and u.senha == senha:
-                self.controleSistema.usuarioLogado = u
-                return {"user": u, "admin": isinstance(u, Admin)}
+        lista_users = self.dao.get_all_usuarios()
+        print(lista_users)
+        if lista_users[username] and lista_users[username].senha == senha:
+            self.controleSistema.usuarioLogado = lista_users[username] # obj usuario
+            return {"user": lista_users[username], "admin": isinstance(lista_users[username], Admin)}
         raise CredenciaisInvalidasError()
-        return None
 
     def usuario_is_disponivel(self, username):
-        for u in self.lista_usuarios + self.lista_admins:
-            if u.username == username:
-                return False
+        if self.dao.getUsuario(username) == KeyError:
+            return False
         return True
+
 
     def tela_login(self):
         try:
@@ -67,8 +62,7 @@ class ControleUsuario:
             self.controleSistema.logout()
             return None
         except Exception as e:
-            print(f"Erro no login: {str(e)}")
-            return None
+            raise CredenciaisInvalidasException('Erro ao logar.')
 
     def tela_inicial(self):
         try:
@@ -81,8 +75,7 @@ class ControleUsuario:
                 "r": self.controleSistema.return_relatorios
             }
             if escolha not in escolhas:
-                print("Opção inválida!")
-                return None
+                raise(EntradaInvalidaException("Escolha inválida."))
 
             result = escolhas[escolha]()
             return result
@@ -103,14 +96,16 @@ class ControleUsuario:
 
         try:
             if dictCadastro["admin"] == "s":
-                usuario = self.adicionar_admin(dictCadastro["username"], dictCadastro["senha"])
+                print("Cadastrando admin")
+                usuario = self.cadastrar(Admin(dictCadastro["username"], dictCadastro["senha"]))
             else:
                 usuario = self.cadastrar(Usuario(dictCadastro["username"], dictCadastro["senha"]))
             self.controleSistema.usuarioLogado = usuario
-            print("Cadastro realizado com sucesso!")
+            print(usuario)
             return {"user": usuario, "admin": isinstance(usuario, Admin)}
         except UsuarioJaExistenteError as e:
             print(e.message)
+
 
     def tela_logout(self):
         self.controleSistema.logout()

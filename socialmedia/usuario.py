@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 class Usuario:
     def __init__(self, username: str, senha: str) -> None:
         self.__username = username
@@ -18,5 +20,3 @@ class Usuario:
     @senha.setter
     def senha(self, newsenha):
         self.__senha = newsenha
-
-arthur = Usuario("arthur", "123")
