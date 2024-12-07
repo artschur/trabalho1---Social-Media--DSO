@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 
 
 class TelaComentario:
+
     def __init__(self):
         sg.theme('Reddit')
         self.window = None
@@ -29,6 +30,7 @@ class TelaComentario:
 
     def mostrar_opcoes_comentario(self):
         layout = [
+
             [sg.Text("Opções do Comentário", font=('Helvetica', 15, 'bold'), justification='center')],
             [sg.Button('Curtir comentário', key='1', size=(40, 3))],
             [sg.Button('Editar comentário', key='2', size=(40, 3))],

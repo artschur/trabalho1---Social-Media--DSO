@@ -7,4 +7,4 @@ Upon building this project, we intended making a social media with limits, so yo
 
 But wait a little bit more, we are building it... ⚒️
 
-
+![mermaid_ink_svg_pako_eNq1WFtvGjkU_isjS5VoAiiEBYIVRYqyedhVW1Vttw8V0sg744LVGRvZnrR](https://github.com/user-attachments/assets/88940eb8-4152-49e9-bbce-f553de34e1d3)
