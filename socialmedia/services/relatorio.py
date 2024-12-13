@@ -19,25 +19,25 @@ class Relatorio:
             [sg.Text("Relatórios do Sistema", font=('Helvetica', 20, 'bold'),
                      justification='center', expand_x=True, pad=(0, 20))],
 
-            # Post mais curtido
+
             [sg.Frame("Post Mais Curtido", [
                 [sg.Text(self.__format_post_curtido(post_curtido), key='-POST-',
                          font=('Helvetica', 14), size=(60, 15))]
             ], font=('Helvetica', 18), size=(800, 100))],
 
-            # Tópico com mais posts
+
             [sg.Frame("Tópico com Mais Posts", [
                 [sg.Text(self.__format_topico_posts(topico_posts), key='-TOPICO-',
                          font=('Helvetica', 14), size=(60, 15))]
             ], font=('Helvetica', 18), size=(800, 100))],
 
-            # Tópico com mais interações
+
             [sg.Frame("Tópico com Mais Interações", [
                 [sg.Text(self.__format_topico_interacoes(topico_interacoes), key='-INTERACOES-',
                          font=('Helvetica', 14), size=(60, 15))]
             ], font=('Helvetica', 18), size=(800, 100))],
 
-            # Autor mais curtido
+
             [sg.Frame("Autor Mais Curtido", [
                 [sg.Text(self.__format_autor_curtido(autor), key='-AUTOR-', font=('Helvetica', 14),
                          size=(60, 3))]
@@ -64,10 +64,14 @@ class Relatorio:
         if not posts:
             return None
 
+        for post in posts:
+            if not hasattr(post, 'likes'):
+                post.likes = []
+
         try:
-            post_mais_curtido = max(posts, key=lambda post: len(post.likes) if hasattr(post, 'likes') else 0)
+            post_mais_curtido = max(posts, key=lambda post: len(post.likes))
             return (post_mais_curtido, len(post_mais_curtido.likes)) if post_mais_curtido else None
-        except Exception:
+        except ValueError:
             return None
 
     def __get_topico_mais_posts(self):
@@ -79,14 +83,15 @@ class Relatorio:
         try:
             count_post_por_topico = {}
             for topico in topicos:
-                posts_topico = [post for post in posts if post.topico == topico]
+                posts_topico = [post for post in posts if post.topico.id == topico.id]
                 count_post_por_topico[topico] = len(posts_topico)
 
             if not count_post_por_topico:
                 return None
 
             return max(count_post_por_topico.items(), key=lambda x: x[1])
-        except Exception:
+        except Exception as e:
+            print(f"Error in __get_topico_mais_posts: {e}")
             return None
 
     def __get_topico_mais_interacoes(self):
@@ -98,10 +103,10 @@ class Relatorio:
         try:
             interacoes_por_topico = {}
             for topico in topicos:
-                posts_topico = [post for post in posts if post.topico == topico]
+                posts_topico = [post for post in posts if post.topico.id == topico.id]
                 interacoes = sum(
-                    len(post.likes if hasattr(post, 'likes') else []) +
-                    len(post.comentarios if hasattr(post, 'comentarios') else [])
+                    len(getattr(post, 'likes', [])) +
+                    len(getattr(post, 'comentarios', []))
                     for post in posts_topico
                 )
                 interacoes_por_topico[topico] = interacoes
@@ -110,7 +115,8 @@ class Relatorio:
                 return None
 
             return max(interacoes_por_topico.items(), key=lambda x: x[1])
-        except Exception:
+        except Exception as e:
+            print(f"Error in __get_topico_mais_interacoes: {e}")
             return None
 
     def __get_autor_mais_curtido(self):
