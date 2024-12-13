@@ -54,5 +54,5 @@ class ControleSistema:
         self.topico_atual = None
 
     def return_relatorios(self):
-        print()
-        return (self.relatorio.post_mais_curtido(), self.relatorio.topico_com_mais_posts(), self.relatorio.topico_com_mais_interacoes(), self.relatorio.autor_mais_curtido())
+        self.relatorio.mostrar_relatorios()
+        return None

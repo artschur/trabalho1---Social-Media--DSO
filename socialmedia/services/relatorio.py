@@ -1,9 +1,12 @@
 import PySimpleGUI as sg
-
+from socialmedia.daos.dao_post import PostsDAO
+from socialmedia.daos.dao_topico import TopicosDAO
 
 class Relatorio:
     def __init__(self, controle_post):
         self.__controle_post = controle_post
+        self.__postsDAO = PostsDAO()
+        self.__topicosDAO = TopicosDAO()
         sg.theme('Reddit')
 
     def mostrar_relatorios(self):
@@ -57,71 +60,78 @@ class Relatorio:
                 break
 
     def __get_post_mais_curtido(self):
-        if not self.__controle_post.posts:
+        posts = self.__postsDAO.get_all()
+        if not posts:
             return None
 
-        post_mais_curtido = None
-        maior_qtd_curtidas = -1
-        for post in self.__controle_post.posts:
-            if len(post.likes) > maior_qtd_curtidas:
-                post_mais_curtido = post
-                maior_qtd_curtidas = len(post.likes)
-
-        return (post_mais_curtido, maior_qtd_curtidas) if post_mais_curtido else None
+        try:
+            post_mais_curtido = max(posts, key=lambda post: len(post.likes) if hasattr(post, 'likes') else 0)
+            return (post_mais_curtido, len(post_mais_curtido.likes)) if post_mais_curtido else None
+        except Exception:
+            return None
 
     def __get_topico_mais_posts(self):
-        if not self.__controle_post.posts:
+        topicos = self.__topicosDAO.get_all()
+        posts = self.__postsDAO.get_all()
+        if not topicos or not posts:
             return None
 
-        count_post_por_topico = {}
-        for post in self.__controle_post.posts:
-            if post.topico.nome not in count_post_por_topico:
-                topico = post.topico
-                if topico in count_post_por_topico:
-                    count_post_por_topico[topico] += 1
-                else:
-                    count_post_por_topico[topico] = 1
+        try:
+            count_post_por_topico = {}
+            for topico in topicos:
+                posts_topico = [post for post in posts if post.topico == topico]
+                count_post_por_topico[topico] = len(posts_topico)
 
-        if not count_post_por_topico:
+            if not count_post_por_topico:
+                return None
+
+            return max(count_post_por_topico.items(), key=lambda x: x[1])
+        except Exception:
             return None
-
-        return max(count_post_por_topico.items(), key=lambda x: x[1])
 
     def __get_topico_mais_interacoes(self):
-        if not self.__controle_post.posts:
+        topicos = self.__topicosDAO.get_all()
+        posts = self.__postsDAO.get_all()
+        if not topicos or not posts:
             return None
 
-        interacoes_por_topico = {}
-        for post in self.__controle_post.posts:
-            topico = post.topico
-            interacoes = len(post.likes) + len(post.comentarios)
-            if topico in interacoes_por_topico:
-                interacoes_por_topico[topico] += interacoes
-            else:
+        try:
+            interacoes_por_topico = {}
+            for topico in topicos:
+                posts_topico = [post for post in posts if post.topico == topico]
+                interacoes = sum(
+                    len(post.likes if hasattr(post, 'likes') else []) +
+                    len(post.comentarios if hasattr(post, 'comentarios') else [])
+                    for post in posts_topico
+                )
                 interacoes_por_topico[topico] = interacoes
 
-        if not interacoes_por_topico:
-            return None
+            if not interacoes_por_topico:
+                return None
 
-        return max(interacoes_por_topico.items(), key=lambda x: x[1])
+            return max(interacoes_por_topico.items(), key=lambda x: x[1])
+        except Exception:
+            return None
 
     def __get_autor_mais_curtido(self):
-        if not self.__controle_post.posts:
+        posts = self.__postsDAO.get_all()
+        if not posts:
             return None
 
-        curtidas_por_autor = {}
-        for post in self.__controle_post.posts:
-            autor = post.autor
-            curtidas = len(post.likes)
-            if autor in curtidas_por_autor:
-                curtidas_por_autor[autor] += curtidas
-            else:
-                curtidas_por_autor[autor] = curtidas
+        try:
+            curtidas_por_autor = {}
+            for post in posts:
+                if hasattr(post, 'autor') and hasattr(post, 'likes'):
+                    autor = post.autor
+                    curtidas = len(post.likes)
+                    curtidas_por_autor[autor] = curtidas_por_autor.get(autor, 0) + curtidas
 
-        if not curtidas_por_autor:
+            if not curtidas_por_autor:
+                return None
+
+            return max(curtidas_por_autor.items(), key=lambda x: x[1])
+        except Exception:
             return None
-
-        return max(curtidas_por_autor.items(), key=lambda x: x[1])
 
     # Formatting methods
     def __format_post_curtido(self, data):
@@ -149,13 +159,17 @@ class Relatorio:
         return f"Username: {autor.username}\nTotal de Curtidas: {curtidas}"
 
     def post_mais_curtido(self):
-        return self.__get_post_mais_curtido()
+        result = self.__get_post_mais_curtido()
+        return f"Post mais curtido: {result[0].titulo} - {result[1]} curtidas" if result else "Sem posts"
 
     def topico_com_mais_posts(self):
-        return self.__get_topico_mais_posts()
+        result = self.__get_topico_mais_posts()
+        return f"Tópico com mais posts: {result[0].nome} - {result[1]} posts" if result else "Sem tópicos"
 
     def topico_com_mais_interacoes(self):
-        return self.__get_topico_mais_interacoes()
+        result = self.__get_topico_mais_interacoes()
+        return f"Tópico com mais interações: {result[0].nome} - {result[1]} interações" if result else "Sem tópicos"
 
     def autor_mais_curtido(self):
-        self.mostrar_relatorios()
+        result = self.__get_autor_mais_curtido()
+        return f"Autor mais curtido: {result[0].username} - {result[1]} curtidas" if result else "Sem autores"
